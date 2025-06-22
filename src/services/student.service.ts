@@ -4,12 +4,12 @@ export async function getStudentScore(): Promise<Score> {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
-        final: 7.5,
+        score: 7.5,
         regrade1: 8.0,
-        regrade2: 7.0,
+        // regrade2: 8.0,
         status: "Passed",
-        publishedAt: "2025-06-20",
+        publishedAt: "11:30 PM 22-06-2025",
       });
-    }, 500);
+    }, 200);
   });
 }

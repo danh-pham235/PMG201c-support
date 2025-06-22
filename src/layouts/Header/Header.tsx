@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 const navItems = [
-  { href: "#home", label: "Home" },
-  { href: "#features", label: "Features" },
-  { href: "#contact", label: "Contact Us" },
+  { href: "home", label: "Home" },
+  { href: "features", label: "Features" },
+  { href: "contact", label: "Contact Us" },
 ];
 
 const Header: React.FC = () => {
@@ -39,10 +39,7 @@ const Header: React.FC = () => {
             href="/login"
             className="ml-4 px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-400 text-white rounded-full font-semibold shadow hover:scale-105 transition flex items-center gap-2"
           >
-            Login
-            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" className="inline-block">
-              <path d="M5 12l5-5 5 5"/>
-            </svg>
+            Login            
           </a>
         </div>
         <button

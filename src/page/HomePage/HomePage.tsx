@@ -1,8 +1,10 @@
 import React from "react";
-import Header from "../../layouts/Header";
+import Header from "../../layouts/Header/Header";
 import Hero from "../../components/HomeComponent/Hero/HeroComponent";
 import Features from "../../components/HomeComponent/Features/FeatureComponent";
 import Contact from "../../components/HomeComponent/Contact/ContactComponent";
+import Footer from "../../layouts/Footer/Footer";
+import ScrollToTopButton from "../../components/Common/ScrollToTopButton";
 
 const Homepage: React.FC = () => {
   return (
@@ -11,6 +13,8 @@ const Homepage: React.FC = () => {
       <Hero />
       <Features />
       <Contact />
+      <Footer />
+      <ScrollToTopButton />
     </div>
   );
 };

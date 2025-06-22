@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./page/HomePage/HomePage";
+import { studentRoutes } from "./routes/student.routes";
 
 const router = createBrowserRouter([
   {
     path: "/",
     children: [{ path: "/", element: <HomePage /> }],
   },
+  studentRoutes
 ]);
 
 const App: React.FC = () => {

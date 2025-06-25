@@ -3,14 +3,19 @@ import { FiClock } from "react-icons/fi";
 import React from "react";
 import type { Score } from "../../types/score.type";
 
-
 interface ScoreDetailsProps {
   score: Score | null;
+  finalScore: number | null;
   loading: boolean;
   error: string | null;
 }
 
-const ScoreDetails: React.FC<ScoreDetailsProps> = ({ score, loading, error }) => (
+const ScoreDetails: React.FC<ScoreDetailsProps> = ({
+  score,
+  finalScore,
+  loading,
+  error,
+}) => (
   <div className="flex-1 flex flex-col items-start justify-center w-full">
     <div className="flex items-center gap-3 mb-2">
       <FaBookOpen className="text-blue-600 text-3xl" />
@@ -48,37 +53,33 @@ const ScoreDetails: React.FC<ScoreDetailsProps> = ({ score, loading, error }) =>
         <div className="mt-8 flex flex-col gap-3 w-full max-w-md">
           {/* Score */}
           {score.score !== undefined && (
-            <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-6 py-3 shadow-sm">
-              <span className="text-green-700 font-bold text-lg bg-green-100 px-3 py-1 rounded-full">
-                Score
+            <div
+              className={`flex items-center justify-between rounded-xl px-6 py-3 shadow-sm ${
+                finalScore && finalScore < 4
+                  ? "bg-red-50 border border-red-200"
+                  : "bg-green-50 border border-green-200"
+              }`}
+            >
+              <span
+                className={`font-bold text-lg px-3 py-1 rounded-full ${
+                  finalScore && finalScore < 4
+                    ? "text-red-700 bg-red-100"
+                    : "text-green-700 bg-green-100"
+                }`}
+              >
+                Final Score
               </span>
-              <span className="text-2xl font-extrabold text-green-800">
-                {score.score.toFixed(1)}
-              </span>
-            </div>
-          )}
-          {/* Regrade 1 */}
-          {score.regrade1 !== undefined && (
-            <div className="flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-xl px-6 py-3 shadow-sm">
-              <span className="text-yellow-700 font-bold text-lg bg-yellow-100 px-3 py-1 rounded-full">
-                Regrade 1
-              </span>
-              <span className="text-2xl font-extrabold text-yellow-800">
-                {score.regrade1.toFixed(1)}
-              </span>
-            </div>
-          )}
-          {/* Regrade 2 */}
-          {score.regrade2 !== undefined && (
-            <div className="flex items-center justify-between bg-orange-50 border border-orange-200 rounded-xl px-6 py-3 shadow-sm">
-              <span className="text-orange-700 font-bold text-lg bg-orange-100 px-3 py-1 rounded-full">
-                Regrade 2
-              </span>
-              <span className="text-2xl font-extrabold text-orange-800">
-                {score.regrade2.toFixed(1)}
+              <span
+                className={`text-2xl font-extrabold ${
+                  finalScore && finalScore < 4
+                    ? "text-red-600"
+                    : "text-green-800"
+                }`}
+              >
+                {finalScore?.toFixed(1)}
               </span>
             </div>
-          )}
+          )}    
         </div>
       )
     )}

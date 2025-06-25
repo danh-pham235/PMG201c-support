@@ -1,56 +1,50 @@
-import { Button, Menu, type MenuProps } from "antd";
 import { FaBookOpen } from "react-icons/fa";
 import { GoReport } from "react-icons/go";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import React from "react";
+import { AiOutlineEye } from "react-icons/ai";
 
-type MenuItem = Required<MenuProps>["items"][number];
-const items: MenuItem[] = [
-  { key: "1", icon: <FaBookOpen />, label: "Home" },
-  { key: "2", icon: <GoReport />, label: "Regrade" },
+const menuItems = [
+  {
+    key: "/student/grade",
+    icon: <FaBookOpen size={28} />,
+    label: "Home",
+  },
+  {
+    key: "/student/regrade",
+    icon: <GoReport size={28} />,
+    label: "Regrade",
+  },
+  {
+    key: "/student/view-regrade",
+    icon: <AiOutlineEye size={28} />,
+    label: "View regrade",
+  },
 ];
 
-interface SidebarProps {
-  collapsed: boolean;
-  toggleCollapsed: () => void;
-}
-
-const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapsed }) => {
+const Sidebar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   return (
-    <div
-      className="hidden md:flex flex-col items-center bg-white border border-gray-200 rounded-3xl shadow-2xl py-6 px-2 transition-all duration-300"
-      style={{
-        width: collapsed ? 72 : 220,
-        minWidth: collapsed ? 72 : 220,
-        maxWidth: collapsed ? 72 : 220,
-      }}
-    >
-      <Button
-        type="text"
-        onClick={toggleCollapsed}
-        className={`mb-4 mx-auto flex items-center justify-center w-10 h-10 rounded-full hover:bg-orange-50 transition-all`}
-        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-      />
-      <Menu
-        mode="inline"
-        theme="light"
-        inlineCollapsed={collapsed}
-        items={items}
-        className="rounded-xl border-0 w-full"
-        style={{
-          background: "transparent",
-          fontWeight: 500,
-          fontSize: 16,
-          width: "100%",
-        }}
-        onClick={({ key }) => {
-          if (key === "1") navigate("/student/grade");
-          if (key === "2") navigate("/student/regrade");
-        }}
-      />
-    </div>
+    <nav className="flex flex-col items-center bg-white rounded-3xl py-6 px-2 gap-4 min-h-[320px] w-[90px] shadow-none border-none">
+      {menuItems.map((item) => {
+        const active = location.pathname === item.key;
+        return (
+          <button
+            key={item.key}
+            onClick={() => navigate(item.key)}
+            className={`flex flex-col items-center w-16 py-3 rounded-2xl transition
+              ${active ? "bg-gray-100 text-blue-600 font-semibold" : "hover:bg-gray-100 text-gray-700"}
+            `}
+            style={{ outline: "none", border: "none", background: "none" }}
+          >
+            <span className="mb-1">{item.icon}</span>
+            <span className="text-xs">{item.label}</span>
+          </button>
+        );
+      })}
+    </nav>
   );
 };
 

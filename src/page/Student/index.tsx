@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from "react";
-import type { Score } from "../../types/score.type";
 import { getStudentScore } from "../../services/student.service";
-import Sidebar from "../../components/StudentComponent/Sidebar";
 import ScoreCircle from "../../components/StudentComponent/ScoreCircle";
 import ScoreDetails from "../../components/StudentComponent/ScoreDetail";
+import ScoreTable from "../../components/StudentComponent/ScoreTable";
 
 const StudentPage: React.FC = () => {
-  const [score, setScore] = useState<Score | null>(null);
+  const [scoreRows, setScoreRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [collapsed, setCollapsed] = useState(true);
-
-  const toggleCollapsed = () => setCollapsed((prev) => !prev);
 
   useEffect(() => {
     getStudentScore()
       .then((data) => {
-        setScore(data);
+        setScoreRows(data);
         setLoading(false);
       })
       .catch((err) => {
@@ -26,27 +22,28 @@ const StudentPage: React.FC = () => {
       });
   }, []);
 
-  const finalScore =
-    typeof score?.regrade2 === "number"
-      ? score.regrade2
-      : typeof score?.regrade1 === "number"
-      ? score.regrade1
-      : typeof score?.score === "number"
-      ? score.score
-      : 0;
-
+  const finalScore = scoreRows.length
+    ? scoreRows[scoreRows.length - 1].score
+    : 0;
   const isPassed = finalScore >= 4;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-10">
-      <div className="max-w-7xl mx-auto flex gap-4 items-start mt-12">
-        <Sidebar collapsed={collapsed} toggleCollapsed={toggleCollapsed} />
-        <div className="flex-1 flex justify-start">
-          <div className="bg-white border border-gray-200 rounded-3xl shadow-2xl p-10 flex flex-col md:flex-row items-center gap-10 w-full max-w-3xl">
-            <ScoreCircle finalScore={finalScore} isPassed={isPassed} />
-            <ScoreDetails score={score} loading={loading} error={error} />
-          </div>
+    <div className="flex flex-col md:flex-row gap-6 w-full">
+      {/* Card chính bên trái */}
+      <div className="w-full md:w-[50%] flex justify-start ml-5">
+        <div className="bg-white border border-gray-200 rounded-3xl shadow-2xl p-6 flex flex-col md:flex-row items-center gap-10 w-full">
+          <ScoreCircle finalScore={finalScore} isPassed={isPassed} />
+          <ScoreDetails
+            score={scoreRows[scoreRows.length - 1]}
+            finalScore={finalScore}
+            loading={loading}
+            error={error}
+          />
         </div>
+      </div>
+      {/* Bảng điểm bên phải */}
+      <div className="w-full md:w-[50%] flex mt-6 md:mt-0">
+        <ScoreTable scoreRows={scoreRows} />
       </div>
     </div>
   );

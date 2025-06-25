@@ -1,15 +1,20 @@
 import type { RouteObject } from "react-router-dom";
 import StudentPage from "../page/Student";
-import Layout from "../layouts/Layout";
+import RegradePage from "../page/Student/Regrade";
+import StudentLayout from "../layouts/StudentLayout";
 
 
 export const studentRoutes: RouteObject = {
   path: "/student",
-  element: <Layout />,
+  element: <StudentLayout />,
   children: [
     {
       path: "grade",
       element: <StudentPage />,
+    },
+    {
+      path: "regrade",
+      element: <RegradePage />,
     },
   ],
 };

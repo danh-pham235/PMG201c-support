@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/StudentComponent/Sidebar";
-import Header from "./Header";
+import Header from "./Header/Header";
 
 const StudentLayout: React.FC = () => {
   return (

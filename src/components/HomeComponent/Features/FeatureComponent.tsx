@@ -28,8 +28,8 @@ const Features: React.FC = () => {
   ];
 
   return (
-    <section id="features"  className="py-20 bg-gradient-to-br from-white via-blue-50 to-purple-50">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="features" className="py-20 w-full bg-gradient-to-br from-white via-blue-50 to-purple-50">
+      <div className="w-full px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 const navItems = [
-  { href: "home", label: "Home" },
-  { href: "features", label: "Features" },
-  { href: "contact", label: "Contact Us" },
+  { href: "#home", label: "Home" },
+  { href: "#features", label: "Features" },
+  { href: "#contact", label: "Contact Us" },
 ];
 
 const Header: React.FC = () => {

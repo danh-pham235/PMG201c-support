@@ -15,7 +15,7 @@ const mockData = [
     type: "Regrade 2",
     purpose: "Xin phúc khảo điểm môn PMG201c",
     createdDate: "01/06/2025",
-    processNote: "Đã hoàn thành phúc khảo.",
+    processNote: "Không tiếp nhận.",
     file: "",
     status: "Rejected",
     updatedAt: "03/06/2025 09:10:00",
@@ -79,12 +79,12 @@ const ViewRegradePage: React.FC = () => (
                 idx % 2 === 0 ? "bg-white" : "bg-blue-50"
               }`}
             >
-              <td className="px-8 py-3 align-top font-medium text-center">{row.type}</td>
-              <td className="px-8 py-3 align-top font-medium text-center">{row.purpose}</td>
-              <td className="px-8 py-3 align-top font-medium text-center">{row.createdDate}</td>
-              <td className="px-8 py-3 align-top font-medium text-center">{row.processNote}</td>
+              <td className="px-8 py-3 align-top text-center">{row.type}</td>
+              <td className="px-8 py-3 align-top text-center">{row.purpose}</td>
+              <td className="px-8 py-3 align-top text-center">{row.createdDate}</td>
+              <td className="px-8 py-3 align-top text-center">{row.processNote}</td>
               <td className="px-8 py-3 align-top text-center">{statusCell(row.status)}</td>
-              <td className="px-8 py-3 align-top font-medium text-center">{row.updatedAt}</td>
+              <td className="px-8 py-3 align-top text-center">{row.updatedAt}</td>
             </tr>
           ))}
         </tbody>

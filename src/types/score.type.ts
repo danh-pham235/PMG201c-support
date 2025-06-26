@@ -1,7 +1,8 @@
 export interface Score {
-  final: number;
+  score?: number;
   regrade1?: number;
   regrade2?: number;
-  status: "Passed" | "Failed";
-  publishedAt: string;
+  status?: "Passed" | "Not Passed";
+  note?: string;
+  publishedAt?: string;
 }

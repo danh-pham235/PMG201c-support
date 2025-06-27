@@ -1,28 +1,16 @@
-import { FaBookOpen } from "react-icons/fa";
-import { GoReport } from "react-icons/go";
-import { useNavigate, useLocation } from "react-router-dom";
-import React from "react";
-import { AiOutlineEye } from "react-icons/ai";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const menuItems = [
-  {
-    key: "/student/grade",
-    icon: <FaBookOpen size={28} />,
-    label: "Home",
-  },
-  {
-    key: "/student/regrade",
-    icon: <GoReport size={28} />,
-    label: "Regrade",
-  },
-  {
-    key: "/student/view-regrade",
-    icon: <AiOutlineEye size={28} />,
-    label: "View regrade",
-  },
-];
+interface Item {
+    key: string;
+    icon: React.ReactNode;
+    label: string;
+}
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+    menuItems: Array<Item>;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ menuItems }) => {
   const navigate = useNavigate();
   const location = useLocation();
 

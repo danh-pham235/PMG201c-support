@@ -46,4 +46,4 @@ const Pagination: React.FC<PaginationProps> = ({ page, totalPages, setPage }) =>
   </div>
 );
 
-export default Pagination;
+export default Pagination;  

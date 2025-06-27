@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./page/HomePage/HomePage";
 import { studentRoutes } from "./routes/student.routes";
+import { departmentLeaderRoutes } from "./routes/department-leader.route";
 
 const router = createBrowserRouter([
   {
     path: "/",
     children: [{ path: "/", element: <HomePage /> }],
   },
-  studentRoutes
+  studentRoutes,
+  departmentLeaderRoutes,
 ]);
 
 const App: React.FC = () => {

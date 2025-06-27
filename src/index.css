@@ -1,1 +1,27 @@
 @import 'tailwindcss';
+
+table:focus,
+tr:focus,
+td:focus,
+th:focus,
+h1:focus,
+h2:focus,
+h3:focus,
+h4:focus,
+h5:focus,
+h6:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  caret-color: transparent !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+table, th, td {
+  user-select: none;
+}
+
+table, tr, td, th {
+  caret-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}

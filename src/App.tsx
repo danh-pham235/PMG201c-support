@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./page/HomePage/HomePage";
 import { studentRoutes } from "./routes/student.routes";
 import { departmentLeaderRoutes } from "./routes/department-leader.route";
+import { examinerRoutes } from "./routes/examiner.route";
 
 const router = createBrowserRouter([
   {
@@ -11,6 +12,7 @@ const router = createBrowserRouter([
   },
   studentRoutes,
   departmentLeaderRoutes,
+  examinerRoutes,
 ]);
 
 const App: React.FC = () => {

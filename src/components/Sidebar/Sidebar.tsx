@@ -22,7 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems }) => {
           <button
             key={item.key}
             onClick={() => navigate(item.key)}
-            className={`flex flex-col items-center w-16 py-3 rounded-2xl transition
+            className={`flex flex-col items-center w-16 py-3 rounded-2xl transition cursor-pointer
               ${active ? "bg-gray-100 text-blue-600 font-semibold" : "hover:bg-gray-100 text-gray-700"}
             `}
             style={{ outline: "none", border: "none", background: "none" }}

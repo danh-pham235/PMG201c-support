@@ -39,7 +39,7 @@ const Header: React.FC = () => {
             href="/login"
             className="ml-4 px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-400 text-white rounded-full font-semibold shadow hover:scale-105 transition flex items-center gap-2"
           >
-            Login            
+            Login             
           </a>
         </div>
         <button

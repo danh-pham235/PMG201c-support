@@ -4,15 +4,21 @@ import HomePage from "./page/HomePage/HomePage";
 import { studentRoutes } from "./routes/student.routes";
 import { departmentLeaderRoutes } from "./routes/department-leader.route";
 import { examinerRoutes } from "./routes/examiner.route";
+import { lecturerRoutes } from "./routes/lecturer.route";
+import LoginPage from "./page/LoginPage/Login";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    children: [{ path: "/", element: <HomePage /> }],
+    children: [
+      { path: "/", element: <HomePage /> },
+      { path: "/login", element: <LoginPage /> }
+    ],
   },
   studentRoutes,
   departmentLeaderRoutes,
   examinerRoutes,
+  lecturerRoutes,
 ]);
 
 const App: React.FC = () => {

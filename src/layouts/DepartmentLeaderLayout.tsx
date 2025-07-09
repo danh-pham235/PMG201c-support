@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header/Header";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { FaBookOpen } from "react-icons/fa";
-import { GoReport } from "react-icons/go";
+import { MdOutlineReport } from "react-icons/md";
 
 const menuItems = [
   {
@@ -13,9 +13,9 @@ const menuItems = [
     label: "Submissions",
   },
   {
-    key: "/department-leader/division-task",
-    icon: <GoReport size={28} />,
-    label: "Division",
+    key: "/department-leader/report",
+    icon: <MdOutlineReport size={28} />,
+    label: "Report",
   },
 ];
 

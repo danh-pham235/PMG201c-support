@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuthStore } from "../../config/zustand";
 
 const navItems = [
   { href: "#home", label: "Home" },
@@ -8,6 +9,7 @@ const navItems = [
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const user = useAuthStore((state) => state.user);
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur shadow">
@@ -35,12 +37,18 @@ const Header: React.FC = () => {
         </nav>
         {/* Login Button */}
         <div className="flex">
-          <a
-            href="/login"
-            className="ml-4 px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-400 text-white rounded-full font-semibold shadow hover:scale-105 transition flex items-center gap-2"
-          >
-            Login             
-          </a>
+          {user ? (
+            <span className="ml-4 px-6 py-2 bg-gradient-to-r from-green-400 to-blue-400 text-white rounded-full font-semibold shadow flex items-center gap-2">
+              Hello, {user.name || "User"} {/* Fallback if name is missing */}
+            </span>
+          ) : (
+            <a
+              href="/login"
+              className="ml-4 px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-400 text-white rounded-full font-semibold shadow hover:scale-105 transition flex items-center gap-2"
+            >
+              Login
+            </a>
+          )}
         </div>
         <button
           className="md:hidden flex items-center justify-center w-10 h-10 rounded-full border border-orange-200 hover:bg-orange-50 ml-2"
@@ -48,7 +56,7 @@ const Header: React.FC = () => {
           aria-label="Open menu"
         >
           <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M4 8h20M4 16h20" strokeLinecap="round"/>
+            <path d="M4 8h20M4 16h20" strokeLinecap="round" />
           </svg>
         </button>
       </div>
@@ -65,7 +73,7 @@ const Header: React.FC = () => {
               aria-label="Close menu"
             >
               <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round"/>
+                <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
               </svg>
             </button>
             <nav className="flex flex-col gap-4">
@@ -82,11 +90,11 @@ const Header: React.FC = () => {
               <a
                 href="/login"
                 className="mt-4 px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-400 text-white rounded-full font-semibold shadow hover:scale-105 transition flex items-center gap-2"
-                onClick={() => setMenuOpen(false)}
+ onClick={() => setMenuOpen(false)}
               >
                 Login
                 <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" className="inline-block">
-                  <path d="M5 12l5-5 5 5"/>
+                  <path d="M5 12l5-5 5 5" />
                 </svg>
               </a>
             </nav>

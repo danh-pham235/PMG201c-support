@@ -3,7 +3,8 @@ export interface Submission {
   status: "Pending" | "Approved" | "Rejected" | "In Review"
   submittedAt: string;
   assignedTo?: string;
-  
+    filePath: string;
+  examId: number;
 }
 
 export interface PaginationData {

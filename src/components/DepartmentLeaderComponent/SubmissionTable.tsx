@@ -1,31 +1,32 @@
 import React from "react";
 import { FaCheckCircle, FaHourglassHalf, FaTimesCircle } from "react-icons/fa";
-
-interface Submission {
-  submissionId: string;
-  studentId: string;
-  examId: string;
-  status: "Graded" | "Grading" | "Not assigned";
-  assignedLecturerName: string;
-}
+import type { DepartmentSubmission } from "../../services/department-leader.service";
 
 interface SubmissionTableProps {
-  data: Submission[];
+  data: DepartmentSubmission[];
 }
 
+
 const statusCell = (status: string) => {
-  if (status === "Graded")
+  if (status === "graded")
     return (
       <span className="inline-flex items-center justify-center px-4 py-1 bg-green-100 text-green-700 font-semibold rounded-full text-sm shadow-sm">
         <FaCheckCircle className="mr-1" /> Graded
       </span>
     );
-  if (status === "Grading")
+  if (status === "published")
     return (
-      <span className="inline-flex items-center justify-center px-4 py-1 bg-yellow-100 text-yellow-700 font-semibold rounded-full text-sm shadow-sm">
-        <FaHourglassHalf className="mr-1" /> Grading
+      <span className="inline-flex items-center justify-center px-4 py-1 bg-blue-100 text-blue-700 font-semibold rounded-full text-sm shadow-sm">
+        <FaCheckCircle className="mr-1" /> Published
       </span>
     );
+  if (status === "assigned")
+    return (
+      <span className="inline-flex items-center justify-center px-4 py-1 bg-yellow-100 text-yellow-700 font-semibold rounded-full text-sm shadow-sm">
+        <FaHourglassHalf className="mr-1" /> Assigned
+      </span>
+    );
+
   return (
     <span className="inline-flex items-center justify-center px-4 py-1 bg-gray-100 text-gray-600 font-semibold rounded-full text-sm shadow-sm">
       <FaTimesCircle className="mr-1" /> Not assigned
@@ -67,16 +68,16 @@ const SubmissionTable: React.FC<SubmissionTableProps> = ({ data }) => (
               {item.submissionId}
             </td>
             <td className="px-8 py-3 align-top text-center">
-              {item.studentId}
+              {item.studentCode}
             </td>
             <td className="px-8 py-3 align-top text-center min-w-[260px]">
-              {item.examId}
+              {item.examCode}
             </td>
             <td className="px-8 py-3 align-top text-center">
               {statusCell(item.status)}
             </td>
             <td className="px-8 py-3 align-top text-center">
-              {item.assignedLecturerName}
+              {item.assignedLecturer}
             </td>
           </tr>
         ))}

@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
+import { uploadSubmission, getAssignmentsExaminer } from "../../services/examinerService";
+
+interface Exam {
+  examId: string;
+  semester: string;
+}
 
 interface Submission {
   id: string;
@@ -12,6 +18,30 @@ interface Submission {
 const UploadSubmissions: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [examList, setExamList] = useState<Exam[]>([]);
+  const [selectedExamId, setSelectedExamId] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
+  const [loadingExams, setLoadingExams] = useState(true);
+
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        setLoadingExams(true);
+        const res = await getAssignmentsExaminer();
+        const exams = (res || []).map((item: any) => ({
+          examId: item.examId,
+          semester: item.semester,
+        }));
+        setExamList(exams);
+        if (exams.length > 0) setSelectedExamId(exams[0].examId);
+      } catch (err) {
+        toast.error("Failed to load exam list");
+      } finally {
+        setLoadingExams(false);
+      }
+    };
+    fetchExams();
+  }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -25,8 +55,13 @@ const UploadSubmissions: React.FC = () => {
       toast.error("Please select a file to upload.");
       return;
     }
+    if (!selectedExamId) {
+      toast.error("Please select a semester.");
+      return;
+    }
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setUploading(true);
+      await uploadSubmission(selectedExamId, file);
       toast.success("File uploaded successfully!");
       setSubmissions((prev) => [
         ...prev,
@@ -40,40 +75,60 @@ const UploadSubmissions: React.FC = () => {
       (document.getElementById("file-input") as HTMLInputElement).value = "";
     } catch (error) {
       toast.error("Error uploading file. Please try again.");
+    } finally {
+      setUploading(false);
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+    <div className="w-full flex flex-col items-center justify-start gap-8">
       <ToastContainer position="top-right" autoClose={2000} />
-      {/* Card nhỏ chứa nút upload */}
-      <div className="fixed top-28 right-20 z-50">
-        <div className="bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center space-y-4 min-w-[270px] border border-blue-100">
-          <FaCloudUploadAlt className="text-blue-500" size={38} />
-          <input
-            id="file-input"
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-          <label
-            htmlFor="file-input"
-            className="bg-blue-50 text-blue-700 px-3 py-2 rounded-lg cursor-pointer font-semibold hover:bg-blue-100 transition w-full text-center border border-blue-200"
+      {/* Card upload submissions */}
+      <div className="bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center space-y-4 min-w-[320px] max-w-md w-full border border-blue-100">
+        <FaCloudUploadAlt className="text-blue-500" size={38} />
+        {loadingExams ? (
+          <div className="text-blue-500 font-semibold">Loading semesters...</div>
+        ) : (
+          <select
+            value={selectedExamId}
+            onChange={e => setSelectedExamId(e.target.value)}
+            className="mb-2 px-3 py-2 border rounded w-full bg-white"
           >
-            {file ? file.name : "Choose file"}
-          </label>
-          <button
-            type="button"
-            onClick={handleUpload}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:from-blue-600 hover:to-blue-700 transition w-full shadow"
-          >
-            Upload
-          </button>
-        </div>
+            {examList.length === 0 ? (
+              <option value="">No semester available</option>
+            ) : (
+              examList.map((exam) => (
+                <option key={exam.examId} value={exam.examId}>
+                  {exam.semester}
+                </option>
+              ))
+            )}
+          </select>
+        )}
+        <input
+          id="file-input"
+          type="file"
+          accept=".zip"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+        <label
+          htmlFor="file-input"
+          className="bg-blue-50 text-blue-700 px-3 py-2 rounded-lg cursor-pointer font-semibold hover:bg-blue-100 transition w-full text-center border border-blue-200"
+        >
+          {file ? file.name : "Choose file"}
+        </label>
+        <button
+          type="button"
+          onClick={handleUpload}
+          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:from-blue-600 hover:to-blue-700 transition w-full shadow disabled:opacity-60"
+          disabled={uploading || loadingExams || examList.length === 0}
+        >
+          {uploading ? "Uploading..." : "Upload"}
+        </button>
       </div>
-      {/* Card chỉ chứa bảng */}
-      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-10 mt-28 border border-blue-100">
+      {/* Card chứa bảng submissions */}
+      <div className="max-w-xl w-full bg-white rounded-2xl shadow-xl p-10 border border-blue-100">
         <h2 className="text-3xl font-extrabold mb-8 text-blue-900 text-center tracking-tight">Upload Student Submissions</h2>
         <div>
           <h3 className="text-lg font-semibold mb-4 text-blue-800">Uploaded Submissions</h3>

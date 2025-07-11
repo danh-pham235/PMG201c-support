@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuthStore } from "../../config/zustand";
 import { useNavigate } from "react-router-dom";
 
-const navItems = [
+const baseNavItems = [
   { href: "/", label: "Home" },
   { href: "/", label: "Features" },
   { href: "/", label: "Contact Us" },
@@ -14,6 +14,20 @@ const Header: React.FC = () => {
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
   const navigate = useNavigate();
+
+  // Dynamic nav items by role
+  let navItems = [...baseNavItems];
+  if (user && user.role) {
+    if (user.role === "Examiner") {
+      navItems.push({ href: "/examiner", label: "Examiner" });
+    } else if (user.role === "DepartmentLeader") {
+      navItems.push({ href: "/department-leader", label: "Department Leader" });
+    } else if (user.role === "Lecturer") {
+      navItems.push({ href: "/lecturer", label: "Lecturer" });
+    } else if (user.role === "Student") {
+      navItems.push({ href: "/student", label: "Student" });
+    }
+  }
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -36,7 +50,7 @@ const Header: React.FC = () => {
         <nav className="flex-1 flex justify-center">
           <ul className="flex items-center gap-6 bg-white/80 border border-orange-200 rounded-full px-10 py-2 shadow-md">
             {navItems.map((item) => (
-              <li key={item.href}>
+              <li key={item.href + item.label}>
                 <a
                   href={item.href}
                   className="px-4 py-2 font-semibold text-gray-700 hover:text-orange-500 hover:bg-orange-50 rounded-full transition"
@@ -109,7 +123,7 @@ const Header: React.FC = () => {
             <nav className="flex flex-col gap-4">
               {navItems.map((item) => (
                 <a
-                  key={item.href}
+                  key={item.href + item.label}
                   href={item.href}
                   className="text-lg font-semibold text-black hover:text-orange-500 transition"
                   onClick={() => setMenuOpen(false)}

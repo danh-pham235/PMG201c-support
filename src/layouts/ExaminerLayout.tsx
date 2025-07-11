@@ -24,7 +24,9 @@ const ExaminerLayout: React.FC = () => {
       <Header />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-10">
         <div className="flex gap-4 items-start mt-12 w-full">
-          <Sidebar menuItems={menuItems} />
+          <div className="sticky top-24 self-start">
+            <Sidebar menuItems={menuItems} />
+          </div>
           <div className="flex-1 flex justify-center">
             <Outlet />
           </div>

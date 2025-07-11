@@ -16,7 +16,6 @@ interface AuthState {
   setUser: (user: { name: string; role?: string } | null) => void;
 }
 
-// Khôi phục trạng thái từ localStorage khi store khởi tạo
 const savedToken = localStorage.getItem("token");
 const savedUser = localStorage.getItem("user");
 

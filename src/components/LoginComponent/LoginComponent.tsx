@@ -32,10 +32,15 @@ const LoginComponent: React.FC = () => {
   const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
-    window.google?.accounts.id.initialize({
+    if (!window.google) {
+      console.error("Google API script failed to load");
+      toast.error("Không thể tải Google Sign-In. Vui lòng kiểm tra kết nối hoặc cấu hình.");
+      return;
+    }
+    window.google.accounts.id.initialize({
       client_id: CLIENT_ID,
       callback: async (response: any) => {
-        const idToken = response.credential;        
+        const idToken = response.credential;
         if (!idToken) {
           toast.error("Không lấy được id_token từ Google!");
           return;
@@ -43,7 +48,7 @@ const LoginComponent: React.FC = () => {
         await loginWithGoogle(idToken);
       },
     });
-    window.google?.accounts.id.renderButton(
+    window.google.accounts.id.renderButton(
       document.getElementById("googleSignInDiv"),
       { theme: "outline", size: "large" }
     );

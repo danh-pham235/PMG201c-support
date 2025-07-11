@@ -5,3 +5,11 @@ export const API_USER = {
   LOGOUT: "/User/logout",
   IMPORT_USERS: "/User/import-users",
 };
+
+export const API_SUBMISSION = {
+  UPLOAD: "/Submission/upload-submission",
+};
+
+export const API_EXAM = {
+  EXAM_EXAMINER: "/Exam/exams-examiner",
+};

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import HomePage from "./page/HomePage/HomePage";
 import { studentRoutes } from "./routes/student.routes";
 import { departmentLeaderRoutes } from "./routes/department-leader.route";
@@ -39,6 +41,7 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-white text-gray-900 min-h-screen">
+      <ToastContainer position="top-right" />
       {loadingFirstTime ? (
         <div>Loading...</div>
       ) : (

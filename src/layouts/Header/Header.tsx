@@ -1,15 +1,27 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../../config/zustand";
+import { useNavigate } from "react-router-dom";
 
 const navItems = [
-  { href: "#home", label: "Home" },
-  { href: "#features", label: "Features" },
-  { href: "#contact", label: "Contact Us" },
+  { href: "/", label: "Home" },
+  { href: "/", label: "Features" },
+  { href: "/", label: "Contact Us" },
 ];
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((state) => state.setUser);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    setDropdownOpen(false);
+    navigate("/login");
+  };
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur shadow">
@@ -35,12 +47,30 @@ const Header: React.FC = () => {
             ))}
           </ul>
         </nav>
-        {/* Login Button */}
-        <div className="flex">
+        {/* Login/User Dropdown */}
+        <div className="flex relative">
           {user ? (
-            <span className="ml-4 px-6 py-2 bg-gradient-to-r from-green-400 to-blue-400 text-white rounded-full font-semibold shadow flex items-center gap-2">
-              Hello, {user.name || "User"} {/* Fallback if name is missing */}
-            </span>
+            <div className="ml-4 relative">
+              <button
+                className="px-6 py-2 bg-gradient-to-r from-green-400 to-blue-400 text-white rounded-full font-semibold shadow flex items-center gap-2 focus:outline-none"
+                onClick={() => setDropdownOpen((prev) => !prev)}
+              >
+                Hello, {user.name || "User"}
+                <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-36 bg-white border border-gray-200 rounded-lg shadow-lg z-50 animate-fade-in">
+                  <button
+                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                    onClick={handleLogout}
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             <a
               href="/login"
@@ -90,7 +120,7 @@ const Header: React.FC = () => {
               <a
                 href="/login"
                 className="mt-4 px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-400 text-white rounded-full font-semibold shadow hover:scale-105 transition flex items-center gap-2"
- onClick={() => setMenuOpen(false)}
+                onClick={() => setMenuOpen(false)}
               >
                 Login
                 <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" className="inline-block">

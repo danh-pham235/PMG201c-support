@@ -105,11 +105,11 @@ const getGradeType = (score: number | null) => {
 
 // Mapping for grade type to score range label
 const gradeTypeLabels: Record<string, string> = {
-  Excellent: "≥ 8.5",
-  Good: "≥ 7",
-  Average: "≥ 5.5",
-  Weak: "≥ 4",
-  Poor: "< 4",
+  Excellent: "≥ 9.0",
+  Good: "≥ 8.0",
+  Average: "≥ 5.0",
+  Weak: "≥ 4.0",
+  Poor: "< 4.0",
   Unknown: "-",
 };
 
@@ -170,7 +170,6 @@ const ScoreReport: React.FC = () => {
       (r) => typeof r.aiScore === "number" && Math.floor(r.aiScore!) === bin
     ).length,
   }));
-
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 py-8 px-0">

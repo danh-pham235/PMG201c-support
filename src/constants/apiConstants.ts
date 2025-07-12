@@ -15,3 +15,7 @@ export const API_EXAM = {
   EXAM_EXAMINER: "/Exam/exams-examiner",
   AUTO_ASSIGN: "/Exam/assign-lecturers",
 };
+
+export const API_REGRADE_REQUEST = {
+  CREATE: "/Regrade/create-request",
+};

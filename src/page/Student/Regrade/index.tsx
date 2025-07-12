@@ -1,16 +1,26 @@
 import React, { useState } from "react";
+import { createRegradeRequest } from "../../../services/student.service";
+import { toast } from "react-toastify";
+
 
 const RegradePage: React.FC = () => {
   const [studentRollNo, setStudentRollNo] = useState("");
-  const [studentName, setStudentName] = useState("");
-  const [email, setEmail] = useState("");
   const [course] = useState("PMG201c");
   const [reason, setReason] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    try {
+      await createRegradeRequest({
+        studentCode: studentRollNo,
+        reason,
+      });
+      setSubmitted(true);
+      toast.success("Regrade request submitted successfully!");
+    } catch (err: any) {
+      toast.error("Failed to submit regrade request. Please try again.");
+    }
   };
 
   return (
@@ -31,18 +41,6 @@ const RegradePage: React.FC = () => {
                 value: studentRollNo,
                 setValue: setStudentRollNo,
                 type: "text",
-              },
-              {
-                label: "Student name:",
-                value: studentName,
-                setValue: setStudentName,
-                type: "text",
-              },
-              {
-                label: "Email:",
-                value: email,
-                setValue: setEmail,
-                type: "email",
               },
             ].map((item, idx) => (
               <div className="grid grid-cols-12 items-center gap-4" key={idx}>
@@ -85,7 +83,7 @@ const RegradePage: React.FC = () => {
             <div className="flex justify-end mt-8">
               <button
                 type="submit"
-                className="bg-blue-600 text-white font-semibold px-10 py-3 rounded-xl shadow hover:bg-blue-700 transition text-lg"
+                className="bg-blue-600 text-white font-semibold px-10 py-3 rounded-xl shadow hover:bg-blue-700 transition text-lg cursor-pointer"
               >
                 Submit Request
               </button>

@@ -6,6 +6,8 @@ export interface DepartmentSubmission {
   studentCode: string;
   examId: string;
   examCode: string;
+  aiScore: number | null; 
+  finalScore: number | null;  
   round: number;
   status: string;
   assignedLecturer: string;

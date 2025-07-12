@@ -1,185 +1,92 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FilterBar from "../../components/DepartmentLeaderComponent/FilterBar";
 import SubmissionTable from "../../components/DepartmentLeaderComponent/SubmissionTable";
 import Pagination from "../../components/DepartmentLeaderComponent/Pagination";
+import {
+  autoAssignLecturers,
+  getDepartmentSubmissions,
+  type DepartmentSubmission,
+} from "../../services/department-leader.service";
+import { toast, ToastContainer } from "react-toastify";
 
-interface Submission {
-  submissionId: string;
-  studentId: string;
-  examId: string;
-  status: "Graded" | "Grading" | "Not assigned";
-  assignedLecturerName: string;
-}
-
-interface Lecturer {
-  lecturerId: string;
-  lecturerName: string;
-}
-
-const lecturers: Lecturer[] = [
-  { lecturerId: "L01", lecturerName: "Mr. Nguyen Van A" },
-  { lecturerId: "L02", lecturerName: "Ms. Tran Thi B" },
-  { lecturerId: "L03", lecturerName: "Mr. Le Van C" },
-  { lecturerId: "L04", lecturerName: "Ms. Nguyen Thi D" },
-  { lecturerId: "L05", lecturerName: "Mr. Pham Van E" },
-];
-
-// Sample submissions
-const mockData: Submission[] = [
-  {
-    submissionId: "SUB001",
-    studentId: "ST001",
-    examId: "PMG201c_SU25_PE_1234566",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB002",
-    studentId: "ST002",
-    examId: "PMG201c_SU25_PE_1234567",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB003",
-    studentId: "ST003",
-    examId: "PMG201c_SU25_PE_1234568",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB004",
-    studentId: "ST004",
-    examId: "PMG201c_SU25_PE_1234569",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB005",
-    studentId: "ST005",
-    examId: "PMG201c_SU25_PE_1234570",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB006",
-    studentId: "ST006",
-    examId: "PMG201c_SU25_PE_1234571",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB007",
-    studentId: "ST007",
-    examId: "PMG201c_SU25_PE_1234572",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB008",
-    studentId: "ST008",
-    examId: "PMG201c_SU25_PE_1234573",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB009",
-    studentId: "ST009",
-    examId: "PMG201c_SU25_PE_1234574",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB010",
-    studentId: "ST010",
-    examId: "PMG201c_SU25_PE_1234575",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB011",
-    studentId: "ST011",
-    examId: "PMG201c_SU25_PE_1234576",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB012",
-    studentId: "ST012",
-    examId: "PMG201c_SU25_PE_1234577",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB013",
-    studentId: "ST013",
-    examId: "PMG201c_SU25_PE_1234578",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB014",
-    studentId: "ST014",
-    examId: "PMG201c_SU25_PE_1234579",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-  {
-    submissionId: "SUB015",
-    studentId: "ST015",
-    examId: "PMG201c_SU25_PE_1234580",
-    status: "Not assigned",
-    assignedLecturerName: "",
-  },
-];
 const ITEMS_PER_PAGE = 10;
 
 const DepartmentLeaderPage: React.FC = () => {
   const [page, setPage] = useState(1);
-  const [data, setData] = useState<Submission[]>(mockData);
+  const [data, setData] = useState<DepartmentSubmission[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   // Filter/search states
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [examCodeFilter, setExamCodeFilter] = useState("");
   const [lecturerFilter, setLecturerFilter] = useState("");
+  const [roundFilter, setRoundFilter] = useState("");
 
-  // Unique exam codes for filter
-  const examCodes = Array.from(new Set(data.map((item) => item.examId)));
+  useEffect(() => {
+    setLoading(true);
+    getDepartmentSubmissions(page, ITEMS_PER_PAGE)
+      .then((res) => {
+        setData(res.data);
+        setTotal(res.total);
+      })
+      .finally(() => setLoading(false));
+  }, [page]);
 
+  // Get exam code
+  const examCodes = Array.from(new Set(data.map((item) => item.examCode)));
+  //Get list lecturer name
+  const lecturers = Array.from(
+    new Set(data.map((item) => item.assignedLecturer).filter(Boolean))
+  );
+  // Get list round
+  const rounds = Array.from(
+    new Set(data.map((item) => item.round).filter(Boolean))
+  );
   // Filtered data
   const filteredData = data.filter((item) => {
     const searchMatch =
       item.submissionId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.examId.toLowerCase().includes(searchTerm.toLowerCase());
+      item.studentCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.examCode.toLowerCase().includes(searchTerm.toLowerCase());
     const statusMatch = statusFilter ? item.status === statusFilter : true;
-    const examCodeMatch = examCodeFilter ? item.examId === examCodeFilter : true;
-    const lecturerMatch = lecturerFilter
-      ? lecturers.find((l) => l.lecturerId === lecturerFilter)?.lecturerName ===
-        item.assignedLecturerName
+    const examCodeMatch = examCodeFilter
+      ? item.examCode === examCodeFilter
       : true;
-    return searchMatch && statusMatch && examCodeMatch && lecturerMatch;
+    const lecturerMatch = lecturerFilter
+      ? item.assignedLecturer === lecturerFilter
+      : true;
+    const roundMatch = roundFilter ? String(item.round) === roundFilter : true;
+    return (
+      searchMatch && statusMatch && examCodeMatch && lecturerMatch && roundMatch
+    );
   });
 
-  const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
-  const paginatedData = filteredData.slice(
-    (page - 1) * ITEMS_PER_PAGE,
-    page * ITEMS_PER_PAGE
-  );
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
   // Check if all submissions are graded
   const allGraded =
     data.length > 0 && data.every((item) => item.status === "Graded");
 
-  // Auto assign handler
   const handleAutoAssign = async () => {
-    const newData = data.map((item, idx) => ({
-      ...item,
-      assignedLecturerName: lecturers[idx % lecturers.length].lecturerName,
-      status: item.status === "Not assigned" ? "Grading" : item.status,
-    }));
-    setData(newData);
+    if (!data.length) {
+      alert("No submissions available to auto assign lecturers.");
+      return;
+    }
+    const examId = data[0].examId;
+    try {
+      setLoading(true);
+      await autoAssignLecturers(examId); // examCodeFilter là assignmentId
+      toast.success("Lecturers assigned successfully!");
+      const res = await getDepartmentSubmissions(page, ITEMS_PER_PAGE);
+      setData(res.data);
+      setTotal(res.total);
+    } catch (error: any) {
+      toast.error(error?.response?.data || "Auto assign failed!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Publish scores handler
@@ -231,10 +138,22 @@ const DepartmentLeaderPage: React.FC = () => {
         setLecturerFilter={setLecturerFilter}
         examCodes={examCodes}
         lecturers={lecturers}
+        rounds={rounds}
+        roundFilter={roundFilter}
+        setRoundFilter={setRoundFilter}
         onClear={handleClearFilters}
       />
-      <SubmissionTable data={paginatedData} />
+      <SubmissionTable data={filteredData} />
       <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+      <ToastContainer />
+      {loading && (
+        <div className="fixed left-0 top-0 w-full h-full bg-white bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 pointer-events-none">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-solid"></div>
+          <span className="ml-4 text-xl text-blue-700 font-bold">
+            Loading...
+          </span>
+        </div>
+      )}
     </div>
   );
 };

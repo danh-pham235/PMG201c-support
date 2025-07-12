@@ -8,8 +8,10 @@ export const API_USER = {
 
 export const API_SUBMISSION = {
   UPLOAD: "/Submission/upload-submission",
+  GET_SUBMISSION: "/Submission/submission-table",
 };
 
 export const API_EXAM = {
   EXAM_EXAMINER: "/Exam/exams-examiner",
+  AUTO_ASSIGN: "/Exam/assign-lecturers",
 };

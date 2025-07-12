@@ -12,8 +12,8 @@ const mockExam = {
   filePath: "/mock/answer.txt",
 };
 
-const mockStudentText = "Đây là bài làm của sinh viên...";
-const mockAnswerText = "Đây là đáp án chuẩn của đề...";
+const mockStudentText = "This is student's answer...";
+const mockAnswerText = "This is barem...";
 const mockAIScore = 8.5;
 
 interface Submission {

@@ -46,7 +46,6 @@ const ScoreReport: React.FC = () => {
       setLoading(true);
       try {
         const res = await getDepartmentSubmissions(1, 1000); // lấy tối đa 1000 bản ghi, tuỳ ý bạn
-        console.log("API DATA:", res);
         setSubmissions(res.data);
       } catch (err) {
         // handle error nếu cần

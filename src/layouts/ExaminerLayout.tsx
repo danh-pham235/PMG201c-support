@@ -12,6 +12,11 @@ const menuItems = [
     label: "Upload Submissions",
   },
   {
+    key: "/examiner/upload-exam-barem",
+    icon: <FaUpload size={28} />,
+    label: "Upload Exam & Barem",
+  },
+  {
     key: "/examiner/regrade-dashboard",
     icon: <GoReport size={28} />,
     label: "Regrade Requests",

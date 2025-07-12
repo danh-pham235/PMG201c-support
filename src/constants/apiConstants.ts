@@ -8,8 +8,11 @@ export const API_USER = {
 
 export const API_SUBMISSION = {
   UPLOAD: "/Submission/upload-submission",
+  SUBMISSION_TABLE: "/Submission/submission-table",
 };
 
 export const API_EXAM = {
   EXAM_EXAMINER: "/Exam/exams-examiner",
+  UPLOAD_EXAM_PAPER: "/Exam/upload-exam-paper",
+  UPLOAD_BAREM: "/Exam/upload-barem", // cần truyền examId phía sau
 };

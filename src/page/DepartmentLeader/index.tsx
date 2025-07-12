@@ -7,19 +7,7 @@ import {
   getDepartmentSubmissions,
   type DepartmentSubmission,
 } from "../../services/department-leader.service";
-
-interface Lecturer {
-  lecturerId: string;
-  lecturerName: string;
-}
-
-const lecturers: Lecturer[] = [
-  { lecturerId: "L01", lecturerName: "Mr. Nguyen Van A" },
-  { lecturerId: "L02", lecturerName: "Ms. Tran Thi B" },
-  { lecturerId: "L03", lecturerName: "Mr. Le Van C" },
-  { lecturerId: "L04", lecturerName: "Ms. Nguyen Thi D" },
-  { lecturerId: "L05", lecturerName: "Mr. Pham Van E" },
-];
+import { toast, ToastContainer } from "react-toastify";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -34,6 +22,7 @@ const DepartmentLeaderPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [examCodeFilter, setExamCodeFilter] = useState("");
   const [lecturerFilter, setLecturerFilter] = useState("");
+  const [roundFilter, setRoundFilter] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -45,9 +34,16 @@ const DepartmentLeaderPage: React.FC = () => {
       .finally(() => setLoading(false));
   }, [page]);
 
-  // Unique exam codes for filter
+  // Get exam code
   const examCodes = Array.from(new Set(data.map((item) => item.examCode)));
-
+  //Get list lecturer name
+  const lecturers = Array.from(
+    new Set(data.map((item) => item.assignedLecturer).filter(Boolean))
+  );
+  // Get list round
+  const rounds = Array.from(
+    new Set(data.map((item) => item.round).filter(Boolean))
+  );
   // Filtered data
   const filteredData = data.filter((item) => {
     const searchMatch =
@@ -61,7 +57,10 @@ const DepartmentLeaderPage: React.FC = () => {
     const lecturerMatch = lecturerFilter
       ? item.assignedLecturer === lecturerFilter
       : true;
-    return searchMatch && statusMatch && examCodeMatch && lecturerMatch;
+    const roundMatch = roundFilter ? String(item.round) === roundFilter : true;
+    return (
+      searchMatch && statusMatch && examCodeMatch && lecturerMatch && roundMatch
+    );
   });
 
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
@@ -79,13 +78,12 @@ const DepartmentLeaderPage: React.FC = () => {
     try {
       setLoading(true);
       await autoAssignLecturers(examId); // examCodeFilter là assignmentId
-      alert("Lecturers assigned successfully!");
+      toast.success("Lecturers assigned successfully!");
       const res = await getDepartmentSubmissions(page, ITEMS_PER_PAGE);
       setData(res.data);
       setTotal(res.total);
     } catch (error: any) {
-      console.log(error?.response?.data);
-      alert(error?.response?.data || "Auto assign failed!");
+      toast.error(error?.response?.data || "Auto assign failed!");
     } finally {
       setLoading(false);
     }
@@ -140,11 +138,22 @@ const DepartmentLeaderPage: React.FC = () => {
         setLecturerFilter={setLecturerFilter}
         examCodes={examCodes}
         lecturers={lecturers}
+        rounds={rounds}
+        roundFilter={roundFilter}
+        setRoundFilter={setRoundFilter}
         onClear={handleClearFilters}
       />
       <SubmissionTable data={filteredData} />
       <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-      {loading && <div>Loading...</div>}
+      <ToastContainer />
+      {loading && (
+        <div className="fixed left-0 top-0 w-full h-full bg-white bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 pointer-events-none">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-solid"></div>
+          <span className="ml-4 text-xl text-blue-700 font-bold">
+            Loading...
+          </span>
+        </div>
+      )}
     </div>
   );
 };

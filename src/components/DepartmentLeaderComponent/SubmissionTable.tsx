@@ -6,21 +6,20 @@ interface SubmissionTableProps {
   data: DepartmentSubmission[];
 }
 
-
 const statusCell = (status: string) => {
-  if (status === "graded")
+  if (status === "Graded")
     return (
       <span className="inline-flex items-center justify-center px-4 py-1 bg-green-100 text-green-700 font-semibold rounded-full text-sm shadow-sm">
         <FaCheckCircle className="mr-1" /> Graded
       </span>
     );
-  if (status === "published")
+  if (status === "Published")
     return (
       <span className="inline-flex items-center justify-center px-4 py-1 bg-blue-100 text-blue-700 font-semibold rounded-full text-sm shadow-sm">
         <FaCheckCircle className="mr-1" /> Published
       </span>
     );
-  if (status === "assigned")
+  if (status === "Assigned")
     return (
       <span className="inline-flex items-center justify-center px-4 py-1 bg-yellow-100 text-yellow-700 font-semibold rounded-full text-sm shadow-sm">
         <FaHourglassHalf className="mr-1" /> Assigned
@@ -48,6 +47,9 @@ const SubmissionTable: React.FC<SubmissionTableProps> = ({ data }) => (
           <th className="px-8 py-4 text-center font-bold text-base uppercase tracking-wider min-w-[260px]">
             Exam Code
           </th>
+          <th className="px-8 py-4 text-center font-bold text-base uppercase tracking-wider w-16">
+            Round
+          </th>
           <th className="px-8 py-4 text-center font-bold text-base uppercase tracking-wider">
             Status
           </th>
@@ -72,6 +74,9 @@ const SubmissionTable: React.FC<SubmissionTableProps> = ({ data }) => (
             </td>
             <td className="px-8 py-3 align-top text-center min-w-[260px]">
               {item.examCode}
+            </td>
+            <td className="px-8 py-3 align-top text-center w-16">
+              {item.round}
             </td>
             <td className="px-8 py-3 align-top text-center">
               {statusCell(item.status)}

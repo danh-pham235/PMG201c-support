@@ -23,7 +23,7 @@ export const getAssignmentsExaminer = async () => {
 };
 
 export const getSubmissionTable = async (page = 1, pageSize = 10) => {
-  const response = await axiosInstance.get(`${API_SUBMISSION.SUBMISSION_TABLE}?page=${page}&pageSize=${pageSize}`);
+  const response = await axiosInstance.get(`${API_SUBMISSION.GET_SUBMISSION}?page=${page}&pageSize=${pageSize}`);
   return response.data;
 };
 

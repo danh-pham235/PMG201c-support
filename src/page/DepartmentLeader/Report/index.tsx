@@ -1,131 +1,72 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LineChart from "../../../components/DepartmentLeaderComponent/LineChart";
 import PieChartReport from "../../../components/DepartmentLeaderComponent/CircleChart";
-
-// Mock data
-const mockReportData = [
-  {
-    submissionId: "SUB001",
-    studentId: "ST001",
-    studentName: "Nguyen Van A",
-    examId: "EXAM001",
-    examName: "PMG201c_SU25_PE_1234566",
-    finalScore: 8.5,
-    aiScore: 8.0,
-    gradedBy: "Lecturer01",
-    gradedAt: "2024-06-01",
-  },
-  {
-    submissionId: "SUB002",
-    studentId: "ST002",
-    studentName: "Tran Thi B",
-    examId: "EXAM001",
-    examName: "PMG201c_SU25_PE_1234566",
-    finalScore: 7.5,
-    aiScore: 7.5,
-    gradedBy: "Lecturer02",
-    gradedAt: "2024-06-01",
-  },
-  {
-    submissionId: "SUB003",
-    studentId: "ST003",
-    studentName: "Le Van C",
-    examId: "EXAM002",
-    examName: "PMG201c_SU25_PE_1234567",
-    finalScore: 5.5,
-    aiScore: 6.0,
-    gradedBy: "Lecturer01",
-    gradedAt: "2024-06-02",
-  },
-  {
-    submissionId: "SUB004",
-    studentId: "ST004",
-    studentName: "Pham Thi D",
-    examId: "EXAM002",
-    examName: "PMG201c_SU25_PE_1234567",
-    finalScore: 6.5,
-    aiScore: 9.0,
-    gradedBy: "Lecturer02",
-    gradedAt: "2024-06-03",
-  },
-  {
-    submissionId: "SUB004",
-    studentId: "ST004",
-    studentName: "Pham Thi D",
-    examId: "EXAM002",
-    examName: "PMG201c_SU25_PE_1234567",
-    finalScore: 4.0,
-    aiScore: 4.2,
-    gradedBy: "Lecturer02",
-    gradedAt: "2024-06-03",
-  },
-  {
-    submissionId: "SUB005",
-    studentId: "ST004",
-    studentName: "Pham Thi D",
-    examId: "EXAM002",
-    examName: "PMG201c_SU25_PE_1234567",
-    finalScore: 9.2,
-    aiScore: 9.0,
-    gradedBy: "Lecturer02",
-    gradedAt: "2024-06-03",
-  },
-  {
-    submissionId: "SUB006",
-    studentId: "ST004",
-    studentName: "Pham Thi D",
-    examId: "EXAM002",
-    examName: "PMG201c_SU25_PE_1234567",
-    finalScore: 5.6,
-    aiScore: 5.4,
-    gradedBy: "Lecturer02",
-    gradedAt: "2024-06-03",
-  },
-  {
-    submissionId: "SUB007",
-    studentId: "ST004",
-    studentName: "Pham Thi D",
-    examId: "EXAM002",
-    examName: "PMG201c_SU25_PE_1234567",
-    finalScore: 9.2,
-    aiScore: 9.0,
-    gradedBy: "Lecturer02",
-    gradedAt: "2024-06-03",
-  },
-];
+import {
+  getDepartmentSubmissions,
+  type DepartmentSubmission,
+} from "../../../services/department-leader.service";
 
 const getGradeType = (score: number | null) => {
   if (score === null || score === undefined) return "Unknown";
-  if (score >= 8.5) return "Excellent";
+  if (score >= 9) return "Excellent";
+  if (score >= 8) return "VeryGood";
   if (score >= 7) return "Good";
-  if (score >= 5.5) return "Average";
-  if (score >= 4) return "Weak";
+  if (score >= 6) return "Average";
+  if (score >= 4) return "BelowAverage";
   return "Poor";
 };
 
 // Mapping for grade type to score range label
 const gradeTypeLabels: Record<string, string> = {
-  Excellent: "≥ 8.5",
-  Good: "≥ 7",
-  Average: "≥ 5.5",
-  Weak: "≥ 4",
-  Poor: "< 4",
+  Excellent: "≥ 9.0",
+  VeryGood: "≥ 8.0",
+  Good: "≥ 7.0",
+  Average: "≥ 6.0",
+  BelowAverage: "≥ 4.0",
+  Poor: "< 4.0",
   Unknown: "-",
 };
 
 const gradeColors: Record<string, string> = {
   Excellent: "#4ade80",
-  Good: "#60a5fa",
-  Average: "#facc15",
-  Weak: "#f87171",
+  VeryGood: "#60a5fa",
+  Good: "#facc15",
+  Average: "#f87171",
+  BelowAverage: "#fbbf24",
   Poor: "#a3a3a3",
   Unknown: "#d1d5db",
 };
 
 const ScoreReport: React.FC = () => {
+  const [submissions, setSubmissions] = useState<DepartmentSubmission[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const res = await getDepartmentSubmissions(1, 1000); // lấy tối đa 1000 bản ghi, tuỳ ý bạn
+        setSubmissions(res.data);
+      } catch (err) {
+        // handle error nếu cần
+      }
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="fixed left-0 top-0 w-full h-full bg-white bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 pointer-events-none">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-solid"></div>
+        <span className="ml-4 text-xl text-blue-700 font-bold">Loading...</span>
+      </div>
+    );
+  }
+
   // Stats
-  const total = mockReportData.length;
-  const gradedRows = mockReportData.filter(
+  const total = submissions.length;
+  const gradedRows = submissions.filter(
     (r) => typeof r.finalScore === "number"
   );
   const avgScore =
@@ -152,7 +93,14 @@ const ScoreReport: React.FC = () => {
       : "-";
 
   // Grade type distribution for Pie chart
-  const gradeTypes = ["Excellent", "Good", "Average", "Weak", "Poor"];
+  const gradeTypes = [
+    "Excellent",
+    "VeryGood",
+    "Good",
+    "Average",
+    "BelowAverage",
+    "Poor",
+  ];
   const gradeDistribution = gradeTypes.map((type) => ({
     type,
     count: gradedRows.filter((r) => getGradeType(r.finalScore) === type).length,
@@ -164,13 +112,13 @@ const ScoreReport: React.FC = () => {
   const scoreDensity = bins.map((bin) => ({
     score: bin,
     finalCount: gradedRows.filter(
-      (r) => typeof r.finalScore === "number" && Math.floor(r.finalScore!) === bin
+      (r) =>
+        typeof r.finalScore === "number" && Math.floor(r.finalScore!) === bin
     ).length,
     aiCount: gradedRows.filter(
       (r) => typeof r.aiScore === "number" && Math.floor(r.aiScore!) === bin
     ).length,
   }));
-
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 py-8 px-0">
@@ -223,7 +171,7 @@ const ScoreReport: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
           <div className="bg-white rounded-2xl shadow p-8 flex flex-col items-center">
             <h3 className="text-lg font-bold mb-4 text-blue-900">
-              Grade Distribution
+              Score Range Statistics
             </h3>
             <PieChartReport
               gradeDistribution={gradeDistribution}

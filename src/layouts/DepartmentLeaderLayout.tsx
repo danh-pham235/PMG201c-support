@@ -4,28 +4,22 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header/Header";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { FaBookOpen } from "react-icons/fa";
-import { GoReport } from "react-icons/go";
-import { AiOutlineEye } from "react-icons/ai";
+import { MdOutlineReport } from "react-icons/md";
 
 const menuItems = [
   {
-    key: "/student/grade",
+    key: "/department-leader/submissions",
     icon: <FaBookOpen size={28} />,
-    label: "Home",
+    label: "Submissions",
   },
   {
-    key: "/student/regrade",
-    icon: <GoReport size={28} />,
-    label: "Regrade",
-  },
-  {
-    key: "/student/view-regrade",
-    icon: <AiOutlineEye size={28} />,
-    label: "View regrade",
+    key: "/department-leader/report",
+    icon: <MdOutlineReport size={28} />,
+    label: "Report",
   },
 ];
 
-const StudentLayout: React.FC = () => {
+const DepartmentLeaderLayout: React.FC = () => {
   return (
     <>
       <Header />
@@ -41,4 +35,4 @@ const StudentLayout: React.FC = () => {
   );
 };
 
-export default StudentLayout;
+export default DepartmentLeaderLayout;

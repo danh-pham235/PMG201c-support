@@ -28,8 +28,7 @@ const StudentPage: React.FC = () => {
   const isPassed = finalScore >= 4;
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 w-full">
-      {/* Card chính bên trái */}
+    <div className="flex flex-col md:flex-row w-full">
       <div className="w-full md:w-[50%] flex justify-start ml-5">
         <div className="bg-white border border-gray-200 rounded-3xl shadow-2xl p-6 flex flex-col md:flex-row items-center gap-10 w-full">
           <ScoreCircle finalScore={finalScore} isPassed={isPassed} />
@@ -41,7 +40,7 @@ const StudentPage: React.FC = () => {
           />
         </div>
       </div>
-      {/* Bảng điểm bên phải */}
+
       <div className="w-full md:w-[50%] flex mt-6 md:mt-0">
         <ScoreTable scoreRows={scoreRows} />
       </div>

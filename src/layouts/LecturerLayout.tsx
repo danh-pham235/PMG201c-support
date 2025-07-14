@@ -1,37 +1,24 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-
 import Header from "./Header/Header";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { FaBookOpen } from "react-icons/fa";
-import { GoReport } from "react-icons/go";
-import { AiOutlineEye } from "react-icons/ai";
 
 const menuItems = [
   {
-    key: "/student/grade",
+    key: "/lecturer/assigned-submissions",
     icon: <FaBookOpen size={28} />,
-    label: "Home",
-  },
-  {
-    key: "/student/regrade",
-    icon: <GoReport size={28} />,
-    label: "Regrade",
-  },
-  {
-    key: "/student/view-regrade",
-    icon: <AiOutlineEye size={28} />,
-    label: "View regrade",
+    label: "Assigned Submissions",
   },
 ];
 
-const StudentLayout: React.FC = () => {
+const LecturerLayout: React.FC = () => {
   return (
     <>
       <Header />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-10">
         <div className="flex gap-4 items-start mt-12 w-full">
-          <Sidebar menuItems = {menuItems}/>
+          <Sidebar menuItems={menuItems} />
           <div className="flex-1 flex justify-center">
             <Outlet />
           </div>
@@ -41,4 +28,4 @@ const StudentLayout: React.FC = () => {
   );
 };
 
-export default StudentLayout;
+export default LecturerLayout;

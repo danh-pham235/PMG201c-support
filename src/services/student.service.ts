@@ -1,3 +1,6 @@
+import axiosInstance from "../config/axiosConfig";
+import { API_REGRADE_REQUEST } from "../constants/apiConstants";
+
 export async function getStudentScore(): Promise<any[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -18,3 +21,8 @@ export async function getStudentScore(): Promise<any[]> {
     }, 200);
   });
 }
+
+export const createRegradeRequest = async (data: any) => {
+  const response = await axiosInstance.post(API_REGRADE_REQUEST.CREATE, data);
+  return response.data; 
+};

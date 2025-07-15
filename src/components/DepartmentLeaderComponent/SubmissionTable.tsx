@@ -1,5 +1,5 @@
 import React from "react";
-import { FaCheckCircle, FaHourglassHalf, FaTimesCircle } from "react-icons/fa";
+import { FaCheckCircle, FaHourglassHalf, FaRedo, FaTimesCircle } from "react-icons/fa";
 import type { DepartmentSubmission } from "../../services/department-leader.service";
 
 interface SubmissionTableProps {
@@ -25,6 +25,12 @@ const statusCell = (status: string) => {
         <FaHourglassHalf className="mr-1" /> Assigned
       </span>
     );
+  if (status === "Regrade")
+    return (
+      <span className="inline-flex items-center justify-center px-4 py-1 bg-orange-100 text-orange-700 font-semibold rounded-full text-sm shadow-sm">
+        <FaRedo className="mr-1" /> Regrade
+      </span>
+    );
 
   return (
     <span className="inline-flex items-center justify-center px-4 py-1 bg-gray-100 text-gray-600 font-semibold rounded-full text-sm shadow-sm">
@@ -39,16 +45,13 @@ const SubmissionTable: React.FC<SubmissionTableProps> = ({ data }) => (
       <thead>
         <tr className="bg-gradient-to-r from-blue-400 to-blue-300 text-white rounded-t-xl">
           <th className="px-8 py-4 text-center font-bold text-base uppercase tracking-wider rounded-tl-xl">
-            Submission ID
+            No
           </th>
           <th className="px-8 py-4 text-center font-bold text-base uppercase tracking-wider">
             Student ID
           </th>
           <th className="px-8 py-4 text-center font-bold text-base uppercase tracking-wider min-w-[260px]">
             Exam Code
-          </th>
-          <th className="px-8 py-4 text-center font-bold text-base uppercase tracking-wider w-16">
-            Round
           </th>
           <th className="px-8 py-4 text-center font-bold text-base uppercase tracking-wider">
             Status
@@ -67,16 +70,13 @@ const SubmissionTable: React.FC<SubmissionTableProps> = ({ data }) => (
             }`}
           >
             <td className="px-8 py-3 align-top text-center">
-              {item.submissionId}
+              {idx + 1}
             </td>
             <td className="px-8 py-3 align-top text-center">
               {item.studentCode}
             </td>
             <td className="px-8 py-3 align-top text-center min-w-[260px]">
               {item.examCode}
-            </td>
-            <td className="px-8 py-3 align-top text-center w-16">
-              {item.round}
             </td>
             <td className="px-8 py-3 align-top text-center">
               {statusCell(item.status)}

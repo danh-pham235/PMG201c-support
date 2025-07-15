@@ -11,9 +11,6 @@ interface FilterBarProps {
   setLecturerFilter: (v: string) => void;
   examCodes: string[];
   lecturers: string[];
-  rounds: number[];
-  roundFilter: string;
-  setRoundFilter: (v: string) => void;
   onClear: () => void;
 }
 
@@ -28,9 +25,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
   setLecturerFilter,
   examCodes,
   lecturers,
-  rounds, 
-  roundFilter, 
-  setRoundFilter,
   onClear,
 }) => (
   <div className="flex flex-wrap gap-4 mb-8 items-end bg-blue-50 rounded-xl px-6 py-4 shadow-sm">
@@ -74,23 +68,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
         {examCodes.map((code) => (
           <option key={code} value={code}>
             {code}
-          </option>
-        ))}
-      </select>
-    </div>
-    <div className="flex flex-col">
-      <label className="text-xs font-semibold text-blue-700 mb-1 ml-1">
-        Round
-      </label>
-      <select
-        className="border border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 px-3 py-2 rounded-lg bg-white transition"
-        value={roundFilter}
-        onChange={(e) => setRoundFilter(e.target.value)}
-      >
-        <option value="">All Rounds</option>
-        {rounds.map((r) => (
-          <option key={r} value={r}>
-            {r}
           </option>
         ))}
       </select>

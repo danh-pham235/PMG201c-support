@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuthStore, useLoadingStore } from "../../config/zustand";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
 
 const baseNavItems = [
@@ -16,6 +16,7 @@ const Header: React.FC = () => {
   const setUser = useAuthStore((state) => state.setUser);
   const setLoading = useLoadingStore((state) => state.setLoading);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Dynamic nav items by role
   let navItems = [...baseNavItems];
@@ -44,13 +45,21 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur shadow">
+    <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur shadow transition-shadow duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between py-3 px-4 md:px-10">
         {/* Logo */}
-        <div className="flex items-center gap-2 font-extrabold text-2xl tracking-widest">
-          <span className="text-black">PMS</span>
+        <div className="flex items-center gap-3 font-extrabold text-2xl tracking-widest select-none -ml-4">
+          <span className="w-9 h-9 rounded-full bg-gradient-to-tr from-orange-400 to-yellow-300 flex items-center justify-center text-white shadow-md">
+            {/* Clipboard with check icon */}
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+              <rect x="5" y="3" width="14" height="18" rx="3" fill="currentColor" opacity=".18"/>
+              <rect x="7" y="5" width="10" height="14" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+              <path d="M9.5 12.5l2 2 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </span>
+          <span className="text-black">PMG201c</span>
           <span className="text-orange-500">|</span>
-          <span className="text-orange-500">GR-VI</span>
+          <span className="text-orange-500 italic">Support</span>
         </div>
         {/* Navbar */}
         <nav className="flex-1 flex justify-center">
@@ -59,9 +68,15 @@ const Header: React.FC = () => {
               <li key={item.href + item.label}>
                 <a
                   href={item.href}
-                  className="px-4 py-2 font-semibold text-gray-700 hover:text-orange-500 hover:bg-orange-50 rounded-full transition"
+                  className={`px-4 py-2 font-semibold rounded-full transition-all duration-200
+                    ${location.pathname.startsWith(item.href) && item.href !== "/" ? "text-orange-500 bg-orange-50 shadow-sm" : "text-gray-700 hover:text-orange-500 hover:bg-orange-50"}
+                  `}
+                  style={{ position: 'relative' }}
                 >
                   {item.label}
+                  {location.pathname.startsWith(item.href) && item.href !== "/" && false && (
+                    <span className="absolute left-1/2 -bottom-1.5 -translate-x-1/2 w-6 h-1 bg-orange-400 rounded-full opacity-70"></span>
+                  )}
                 </a>
               </li>
             ))}
@@ -72,18 +87,21 @@ const Header: React.FC = () => {
           {user ? (
             <div className="ml-4 relative">
               <button
-                className="px-6 py-2 bg-gradient-to-r from-green-400 to-blue-400 text-white rounded-full font-semibold shadow flex items-center gap-2 focus:outline-none hover:scale-105 transition"
+                className={`px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-400 text-white rounded-full font-semibold shadow flex items-center gap-2 focus:outline-none hover:scale-105 transition-all duration-200 border-2 border-transparent hover:border-orange-300 hover:ring-2 hover:ring-orange-200/60 ${dropdownOpen ? 'ring-2 ring-orange-300' : ''}`}
                 onClick={() => setDropdownOpen((prev) => !prev)}
               >
+                <span className="w-7 h-7 rounded-full bg-white/30 flex items-center justify-center">
+                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="#fff" opacity=".7"/><path d="M4 20c0-2.2 3.6-4 8-4s8 1.8 8 4" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>
+                </span>
                 Hello, {user.name || "User"}
                 <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 animate-fade-in p-2 flex flex-col gap-2">
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-orange-200 rounded-2xl shadow-2xl z-50 animate-fade-in p-2 flex flex-col gap-2 transition-all duration-200 origin-top-right">
                   <button
-                    className="flex items-center gap-2 w-full px-4 py-2 text-red-600 font-bold rounded-xl bg-red-50 hover:bg-red-100 transition shadow-sm text-base"
+                    className="flex items-center gap-2 w-full px-4 py-2 text-orange-600 font-bold rounded-xl bg-orange-50 hover:bg-orange-100 transition shadow-sm text-base border border-orange-100"
                     onClick={handleLogout}
                   >
                     <FiLogOut size={18} /> Logout
@@ -116,7 +134,7 @@ const Header: React.FC = () => {
             className="fixed inset-0 bg-black/30 z-40"
             onClick={() => setMenuOpen(false)}
           ></div>
-          <div className="fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white p-6 flex flex-col gap-6 shadow-lg z-50 transition-transform duration-300">
+          <div className="fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white p-6 flex flex-col gap-6 shadow-lg z-50 transition-transform duration-300 translate-x-0 animate-slide-in">
             <button
               className="self-end mb-4 p-2 rounded-full hover:bg-orange-50"
               onClick={() => setMenuOpen(false)}
@@ -131,7 +149,7 @@ const Header: React.FC = () => {
                 <a
                   key={item.href + item.label}
                   href={item.href}
-                  className="text-lg font-semibold text-black hover:text-orange-500 transition"
+                  className={`text-lg font-semibold rounded-full px-4 py-2 transition-all duration-200 ${location.pathname.startsWith(item.href) && item.href !== "/" ? "text-orange-500 bg-orange-50" : "text-black hover:text-orange-500 hover:bg-orange-50"}`}
                   onClick={() => setMenuOpen(false)}
                 >
                   {item.label}

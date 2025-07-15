@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { jwtDecode } from 'jwt-decode';
 import { googleLogin, logout } from '../services/authService';
+import { create as createLoading } from 'zustand';
 
 interface DecodedJWT {
   'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name': string;
@@ -14,6 +15,11 @@ interface AuthState {
   loginWithGoogle: (googleIdToken: string) => Promise<void>;
   logoutUser: () => Promise<void>;
   setUser: (user: { name: string; role?: string } | null) => void;
+}
+
+interface LoadingState {
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
 }
 
 const savedToken = sessionStorage.getItem("token");
@@ -54,4 +60,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       sessionStorage.removeItem("user");
     }
   },
+}));
+
+export const useLoadingStore = createLoading<LoadingState>((set) => ({
+  loading: false,
+  setLoading: (loading) => set({ loading }),
 }));

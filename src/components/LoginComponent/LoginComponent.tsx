@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useAuthStore } from "../../config/zustand";
+import { useAuthStore, useLoadingStore } from "../../config/zustand";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom"; 
@@ -30,11 +30,13 @@ const LoginComponent: React.FC = () => {
   const loginWithGoogle = useAuthStore((state) => state.loginWithGoogle);
   const navigate = useNavigate(); 
   const user = useAuthStore((state) => state.user);
+  // const [isLoggingIn, setIsLoggingIn] = useState(false); // Đã bỏ, dùng global loading
+  const setLoading = useLoadingStore((state) => state.setLoading);
 
   useEffect(() => {
     if (!window.google) {
       console.error("Google API script failed to load");
-      toast.error("Không thể tải Google Sign-In. Vui lòng kiểm tra kết nối hoặc cấu hình.");
+      toast.error("Unable to load Google Sign-In. Please check your connection or configuration.");
       return;
     }
     window.google.accounts.id.initialize({
@@ -42,29 +44,42 @@ const LoginComponent: React.FC = () => {
       callback: async (response: any) => {
         const idToken = response.credential;
         if (!idToken) {
-          toast.error("Không lấy được id_token từ Google!");
+          toast.error("Could not get id_token from Google!");
           return;
         }
-        await loginWithGoogle(idToken);
+        setLoading(true);
+        const start = Date.now();
+        try {
+          await loginWithGoogle(idToken);
+        } finally {
+          const elapsed = Date.now() - start;
+          const minLoading = 900; // ms
+          if (elapsed < minLoading) {
+            setTimeout(() => setLoading(false), minLoading - elapsed);
+          } else {
+            setLoading(false);
+          }
+        }
       },
     });
     window.google.accounts.id.renderButton(
       document.getElementById("googleSignInDiv"),
       { theme: "outline", size: "large" }
     );
-  }, [loginWithGoogle]);
+  }, [loginWithGoogle, setLoading]);
 
   useEffect(() => {
     if (user && user.role) {
-      toast.success("Đăng nhập thành công!");
+      toast.success("Login successful!");
       setTimeout(() => {
         navigate(getRouteByRole(user.role || "Unknown"));
-      }, 1200);
+      }, 1000); 
     }
   }, [user, navigate]);
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-orange-100">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-orange-100 relative">
+      {/* LoadingScreen đã được render toàn cục ở App */}
       <div className="bg-white rounded-3xl shadow-2xl border border-blue-100 px-10 py-12 flex flex-col items-center max-w-md w-full mx-4 animate-fade-in">
         {/* Logo minh họa */}
         <div className="mb-6 flex flex-col items-center">
@@ -83,14 +98,14 @@ const LoginComponent: React.FC = () => {
           <span className="text-xl font-bold text-blue-700 tracking-widest">PMG201c</span>
         </div>
         <h2 className="text-3xl font-extrabold mb-2 text-blue-900 text-center tracking-tight">
-          Đăng nhập hệ thống
+          Sign in to the system
         </h2>
         {/* Nút Google Sign In */}
         <div className="w-full flex flex-col items-center mb-4">
           <div id="googleSignInDiv" className="w-full flex justify-center"></div>
         </div>
         <div className="mt-4 text-xs text-gray-400 text-center">
-          <span>Chỉ dành cho tài khoản Google nội bộ trường</span>
+          <span>For internal school Google accounts only</span>
         </div>
         <ToastContainer position="top-right" autoClose={2000} />
       </div>

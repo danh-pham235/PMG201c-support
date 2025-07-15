@@ -4,21 +4,23 @@ import "react-toastify/dist/ReactToastify.css";
 import { uploadExamPaper, uploadBarem, getAssignmentsExaminer } from "../../services/examinerService";
 import { FaFileUpload } from "react-icons/fa";
 import { MdOutlineAssignment, MdOutlineRuleFolder } from "react-icons/md";
+import { useLoadingStore } from "../../config/zustand";
 
 const UploadExamWithBarem: React.FC = () => {
   // Exam Paper
   const [examPaper, setExamPaper] = useState<File | null>(null);
-  const [uploadingExamPaper, setUploadingExamPaper] = useState(false);
   const [semester, setSemester] = useState("");
 
   // Barem
   const [baremFile, setBaremFile] = useState<File | null>(null);
   const [examList, setExamList] = useState<{ examId: string; semester: string }[]>([]);
   const [selectedExamId, setSelectedExamId] = useState<string>("");
-  const [uploadingBarem, setUploadingBarem] = useState(false);
+
+  const setLoading = useLoadingStore((state) => state.setLoading);
 
   const fetchExams = async () => {
     try {
+      setLoading(true);
       const res = await getAssignmentsExaminer();
       const exams = (res || []).map((item: any) => ({
         examId: item.examId,
@@ -28,6 +30,8 @@ const UploadExamWithBarem: React.FC = () => {
       if (exams.length > 0) setSelectedExamId(exams[0].examId);
     } catch (err) {
       toast.error("Failed to load exam list");
+    } finally {
+      setTimeout(() => setLoading(false), 1000);
     }
   };
 
@@ -46,7 +50,7 @@ const UploadExamWithBarem: React.FC = () => {
       return;
     }
     try {
-      setUploadingExamPaper(true);
+      setLoading(true);
       const formData = new FormData();
       formData.append("DTOFile", examPaper);
       formData.append("semester", semester);
@@ -59,7 +63,7 @@ const UploadExamWithBarem: React.FC = () => {
     } catch (err) {
       toast.error("Failed to upload exam paper");
     } finally {
-      setUploadingExamPaper(false);
+      setTimeout(() => setLoading(false), 1000);
     }
   };
 
@@ -74,7 +78,7 @@ const UploadExamWithBarem: React.FC = () => {
       return;
     }
     try {
-      setUploadingBarem(true);
+      setLoading(true);
       await uploadBarem(selectedExamId, baremFile);
       toast.success("Barem file uploaded successfully!");
       setBaremFile(null);
@@ -82,7 +86,7 @@ const UploadExamWithBarem: React.FC = () => {
     } catch (err) {
       toast.error("Failed to upload barem file");
     } finally {
-      setUploadingBarem(false);
+      setTimeout(() => setLoading(false), 1000);
     }
   };
 
@@ -129,9 +133,8 @@ const UploadExamWithBarem: React.FC = () => {
           type="button"
           onClick={handleUploadExamPaper}
           className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition w-full shadow-lg disabled:opacity-60 mt-2"
-          disabled={uploadingExamPaper}
-        >
-          {uploadingExamPaper ? "Uploading..." : "Upload Exam Paper"}
+          >
+          Upload Exam Paper
         </button>
       </div>
       {/* Upload Barem */}
@@ -182,9 +185,8 @@ const UploadExamWithBarem: React.FC = () => {
           type="button"
           onClick={handleUploadBarem}
           className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2 rounded-xl font-bold hover:from-green-600 hover:to-green-700 transition w-full shadow-lg disabled:opacity-60 mt-2"
-          disabled={uploadingBarem}
-        >
-          {uploadingBarem ? "Uploading..." : "Upload Barem File"}
+          >
+          Upload Barem File
         </button>
       </div>
     </div>

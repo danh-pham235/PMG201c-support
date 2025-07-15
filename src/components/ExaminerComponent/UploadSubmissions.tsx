@@ -4,6 +4,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 import { uploadSubmission, getAssignmentsExaminer, getSubmissionTable } from "../../services/examinerService";
 import { MdOutlineUploadFile } from "react-icons/md";
+import { useLoadingStore } from "../../config/zustand";
 
 interface Exam {
   examId: string;
@@ -23,10 +24,14 @@ const UploadSubmissions: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [loadingExams, setLoadingExams] = useState(true);
   const [loadingSubmissions, setLoadingSubmissions] = useState(true);
+  const setLoading = useLoadingStore((state) => state.setLoading);
+
+  
 
   useEffect(() => {
     const fetchExams = async () => {
       try {
+        setLoading(true);
         setLoadingExams(true);
         const res = await getAssignmentsExaminer();
         const exams = (res || []).map((item: any) => ({
@@ -39,14 +44,16 @@ const UploadSubmissions: React.FC = () => {
         toast.error("Failed to load exam list");
       } finally {
         setLoadingExams(false);
+        setTimeout(() => setLoading(false), 1000);
       }
     };
     fetchExams();
-  }, []);
+  }, [setLoading]);
 
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
+        setLoading(true);
         setLoadingSubmissions(true);
         const res = await getSubmissionTable();
         setSubmissions(Array.isArray(res?.data) ? res.data : []);
@@ -54,10 +61,11 @@ const UploadSubmissions: React.FC = () => {
         toast.error("Failed to load submissions");
       } finally {
         setLoadingSubmissions(false);
+        setTimeout(() => setLoading(false), 1000);
       }
     };
     fetchSubmissions();
-  }, []);
+  }, [setLoading]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -76,6 +84,7 @@ const UploadSubmissions: React.FC = () => {
       return;
     }
     try {
+      setLoading(true);
       setUploading(true);
       await uploadSubmission(selectedExamId, file);
       toast.success("File uploaded successfully!");
@@ -88,6 +97,7 @@ const UploadSubmissions: React.FC = () => {
       toast.error("Error uploading file. Please try again.");
     } finally {
       setUploading(false);
+      setTimeout(() => setLoading(false), 1000);
     }
   };
 

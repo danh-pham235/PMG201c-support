@@ -8,6 +8,7 @@ import { departmentLeaderRoutes } from "./routes/department-leader.route";
 import { examinerRoutes } from "./routes/examiner.route";
 import { lecturerRoutes } from "./routes/lecturer.route";
 import LoginPage from "./page/LoginPage/Login";
+import LoadingScreen from "./components/Common/LoadingScreen";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ const App: React.FC = () => {
   return (
     <div className="bg-white text-gray-900 min-h-screen">
       <ToastContainer position="top-right" />
+      <LoadingScreen />
       {loadingFirstTime ? (
         <div>Loading...</div>
       ) : (

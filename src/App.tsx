@@ -9,6 +9,11 @@ import { examinerRoutes } from "./routes/examiner.route";
 import { lecturerRoutes } from "./routes/lecturer.route";
 import LoginPage from "./page/LoginPage/Login";
 import LoadingScreen from "./components/Common/LoadingScreen";
+import ProtectedRoute from "./components/Common/ProtectedRoute";
+import StudentLayout from "./layouts/StudentLayout";
+import DepartmentLeaderLayout from "./layouts/DepartmentLeaderLayout";
+import ExaminerLayout from "./layouts/ExaminerLayout";
+import LecturerLayout from "./layouts/LecturerLayout";
 
 const router = createBrowserRouter([
   {
@@ -18,10 +23,42 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPage /> }
     ],
   },
-  studentRoutes,
-  departmentLeaderRoutes,
-  examinerRoutes,
-  lecturerRoutes,
+  {
+    path: "/student",
+    element: (
+      <ProtectedRoute>
+        <StudentLayout />
+      </ProtectedRoute>
+    ),
+    children: studentRoutes.children,
+  },
+  {
+    path: "/department-leader",
+    element: (
+      <ProtectedRoute>
+        <DepartmentLeaderLayout />
+      </ProtectedRoute>
+    ),
+    children: departmentLeaderRoutes.children,
+  },
+  {
+    path: "/examiner",
+    element: (
+      <ProtectedRoute>
+        <ExaminerLayout />
+      </ProtectedRoute>
+    ),
+    children: examinerRoutes.children,
+  },
+  {
+    path: "/lecturer",
+    element: (
+      <ProtectedRoute>
+        <LecturerLayout />
+      </ProtectedRoute>
+    ),
+    children: lecturerRoutes.children,
+  },
 ]);
 
 const App: React.FC = () => {
@@ -45,7 +82,7 @@ const App: React.FC = () => {
       <ToastContainer position="top-right" />
       <LoadingScreen />
       {loadingFirstTime ? (
-        <div>Loading...</div>
+        <LoadingScreen text="Loading, please wait..." />
       ) : (
         <RouterProvider router={router} />
       )}

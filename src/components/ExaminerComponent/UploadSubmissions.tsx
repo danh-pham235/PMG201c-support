@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
-import { uploadSubmission, getAssignmentsExaminer, getSubmissionTable } from "../../services/examinerService";
+import { uploadSubmission, getAssignmentsExaminer } from "../../services/examinerService";
 import { MdOutlineUploadFile } from "react-icons/md";
 import { useLoadingStore } from "../../config/zustand";
 
@@ -11,22 +11,13 @@ interface Exam {
   semester: string;
 }
 
-interface SubmissionTableRow {
-  studentId: string;
-  status: string;
-}
-
 const UploadSubmissions: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [submissions, setSubmissions] = useState<SubmissionTableRow[]>([]);
   const [examList, setExamList] = useState<Exam[]>([]);
   const [selectedExamId, setSelectedExamId] = useState<string>("");
   const [uploading, setUploading] = useState(false);
   const [loadingExams, setLoadingExams] = useState(true);
-  const [loadingSubmissions, setLoadingSubmissions] = useState(true);
   const setLoading = useLoadingStore((state) => state.setLoading);
-
-  
 
   useEffect(() => {
     const fetchExams = async () => {
@@ -48,23 +39,6 @@ const UploadSubmissions: React.FC = () => {
       }
     };
     fetchExams();
-  }, [setLoading]);
-
-  useEffect(() => {
-    const fetchSubmissions = async () => {
-      try {
-        setLoading(true);
-        setLoadingSubmissions(true);
-        const res = await getSubmissionTable();
-        setSubmissions(Array.isArray(res?.data) ? res.data : []);
-      } catch (err) {
-        toast.error("Failed to load submissions");
-      } finally {
-        setLoadingSubmissions(false);
-        setTimeout(() => setLoading(false), 1000);
-      }
-    };
-    fetchSubmissions();
   }, [setLoading]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,9 +64,6 @@ const UploadSubmissions: React.FC = () => {
       toast.success("File uploaded successfully!");
       setFile(null);
       (document.getElementById("file-input") as HTMLInputElement).value = "";
-      // Reload submissions after upload
-      const res = await getSubmissionTable();
-      setSubmissions(Array.isArray(res?.data) ? res.data : []);
     } catch (error) {
       toast.error("Error uploading file. Please try again.");
     } finally {
@@ -160,50 +131,6 @@ const UploadSubmissions: React.FC = () => {
         >
           {uploading ? "Uploading..." : "Upload Submissions"}
         </button>
-      </div>
-      {/* Card chứa bảng submissions */}
-      <div className="max-w-xl w-full bg-gradient-to-br from-blue-50 via-white to-blue-100 rounded-3xl shadow-2xl p-10 border border-blue-200 animate-fade-in">
-        <h2 className="text-3xl font-extrabold mb-8 text-blue-900 text-center tracking-tight">Uploaded Submissions</h2>
-        <div>
-          <h3 className="text-lg font-semibold mb-4 text-blue-800">Submission Table</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full border border-blue-200 rounded-2xl shadow overflow-hidden text-base">
-              <thead>
-                <tr className="bg-gradient-to-r from-blue-400 to-blue-300 text-white">
-                  <th className="px-6 py-4 text-left font-bold rounded-tl-2xl">Student ID</th>
-                  <th className="px-6 py-4 text-left font-bold rounded-tr-2xl">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loadingSubmissions ? (
-                  <tr>
-                    <td colSpan={2} className="text-center py-12 text-blue-400 animate-pulse">
-                      <svg className="mx-auto mb-2 animate-spin" width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#60A5FA" strokeWidth="4" strokeDasharray="60" strokeDashoffset="20"/></svg>
-                      Loading data...
-                    </td>
-                  </tr>
-                ) : submissions.length === 0 ? (
-                  <tr>
-                    <td colSpan={2} className="text-center py-12 text-gray-400">
-                      <svg className="mx-auto mb-2" width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="#A0AEC0"/></svg>
-                      No submissions data available
-                    </td>
-                  </tr>
-                ) : (
-                  submissions.map((sub, idx) => (
-                    <tr
-                      key={sub.studentId + sub.status}
-                      className={`transition hover:bg-blue-100 ${idx % 2 === 0 ? "bg-white" : "bg-blue-50"}`}
-                    >
-                      <td className="px-6 py-4 border-b border-blue-100">{sub.studentId}</td>
-                      <td className="px-6 py-4 border-b border-blue-100">{sub.status}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
     </div>
   );

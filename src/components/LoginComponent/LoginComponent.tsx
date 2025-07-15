@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-const CLIENT_ID = "368489844372-e2vdkefku0n6akdmna0ja1a55dtv53av.apps.googleusercontent.com";
+const CLIENT_ID = "594718891503-l69jk6egr65mu2jdk9bqatoektd52edr.apps.googleusercontent.com";
 
 const getRouteByRole = (role: string) => {
   switch (role) {
@@ -30,7 +30,6 @@ const LoginComponent: React.FC = () => {
   const loginWithGoogle = useAuthStore((state) => state.loginWithGoogle);
   const navigate = useNavigate(); 
   const user = useAuthStore((state) => state.user);
-  // const [isLoggingIn, setIsLoggingIn] = useState(false); // Đã bỏ, dùng global loading
   const setLoading = useLoadingStore((state) => state.setLoading);
 
   useEffect(() => {

@@ -23,7 +23,7 @@ const Header: React.FC = () => {
     if (user.role === "Examiner") {
       navItems.push({ href: "/examiner", label: "Examiner" });
     } else if (user.role === "DepartmentLeader") {
-      navItems.push({ href: "/department-leader", label: "Department Leader" });
+      navItems.push({ href: "/department-leader/submissions", label: "Department Leader" });
     } else if (user.role === "Lecturer") {
       navItems.push({ href: "/lecturer", label: "Lecturer" });
     } else if (user.role === "Student") {

@@ -5,6 +5,7 @@ import {
   getDepartmentSubmissions,
   type DepartmentSubmission,
 } from "../../../services/department-leader.service";
+import { toast } from "react-toastify";
 
 const getGradeType = (score: number | null) => {
   if (score === null || score === undefined) return "Unknown";
@@ -45,10 +46,10 @@ const ScoreReport: React.FC = () => {
     async function fetchData() {
       setLoading(true);
       try {
-        const res = await getDepartmentSubmissions(1, 1000); // lấy tối đa 1000 bản ghi, tuỳ ý bạn
+        const res = await getDepartmentSubmissions(1, 1000);
         setSubmissions(res.data);
       } catch (err) {
-        // handle error nếu cần
+        toast.error("Please try again later.");
       }
       setLoading(false);
     }

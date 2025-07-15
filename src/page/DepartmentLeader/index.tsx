@@ -22,7 +22,6 @@ const DepartmentLeaderPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [examCodeFilter, setExamCodeFilter] = useState("");
   const [lecturerFilter, setLecturerFilter] = useState("");
-  const [roundFilter, setRoundFilter] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -40,10 +39,7 @@ const DepartmentLeaderPage: React.FC = () => {
   const lecturers = Array.from(
     new Set(data.map((item) => item.assignedLecturer).filter(Boolean))
   );
-  // Get list round
-  const rounds = Array.from(
-    new Set(data.map((item) => item.round).filter(Boolean))
-  );
+
   // Filtered data
   const filteredData = data.filter((item) => {
     const searchMatch =
@@ -57,10 +53,7 @@ const DepartmentLeaderPage: React.FC = () => {
     const lecturerMatch = lecturerFilter
       ? item.assignedLecturer === lecturerFilter
       : true;
-    const roundMatch = roundFilter ? String(item.round) === roundFilter : true;
-    return (
-      searchMatch && statusMatch && examCodeMatch && lecturerMatch && roundMatch
-    );
+    return searchMatch && statusMatch && examCodeMatch && lecturerMatch;
   });
 
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
@@ -138,9 +131,6 @@ const DepartmentLeaderPage: React.FC = () => {
         setLecturerFilter={setLecturerFilter}
         examCodes={examCodes}
         lecturers={lecturers}
-        rounds={rounds}
-        roundFilter={roundFilter}
-        setRoundFilter={setRoundFilter}
         onClear={handleClearFilters}
       />
       <SubmissionTable data={filteredData} />

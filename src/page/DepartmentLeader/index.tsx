@@ -8,6 +8,7 @@ import {
   type DepartmentSubmission,
 } from "../../services/department-leader.service";
 import { toast, ToastContainer } from "react-toastify";
+import { useLoadingStore } from "../../config/zustand";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -16,6 +17,7 @@ const DepartmentLeaderPage: React.FC = () => {
   const [data, setData] = useState<DepartmentSubmission[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const setGlobalLoading = useLoadingStore((state) => state.setLoading);
 
   // Filter/search states
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,13 +27,17 @@ const DepartmentLeaderPage: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
+    setGlobalLoading(true);
     getDepartmentSubmissions(page, ITEMS_PER_PAGE)
       .then((res) => {
         setData(res.data);
         setTotal(res.total);
       })
-      .finally(() => setLoading(false));
-  }, [page]);
+      .finally(() => {
+        setLoading(false);
+        setTimeout(() => setGlobalLoading(false), 1000);
+      });
+  }, [page, setGlobalLoading]);
 
   // Get exam code
   const examCodes = Array.from(new Set(data.map((item) => item.examCode)));
@@ -70,6 +76,7 @@ const DepartmentLeaderPage: React.FC = () => {
     const examId = data[0].examId;
     try {
       setLoading(true);
+      setGlobalLoading(true);
       await autoAssignLecturers(examId); // examCodeFilter là assignmentId
       toast.success("Lecturers assigned successfully!");
       const res = await getDepartmentSubmissions(page, ITEMS_PER_PAGE);
@@ -79,6 +86,7 @@ const DepartmentLeaderPage: React.FC = () => {
       toast.error(error?.response?.data || "Auto assign failed!");
     } finally {
       setLoading(false);
+      setTimeout(() => setGlobalLoading(false), 1000);
     }
   };
 
@@ -94,6 +102,8 @@ const DepartmentLeaderPage: React.FC = () => {
     setExamCodeFilter("");
     setLecturerFilter("");
   };
+
+  if (loading) return null;
 
   return (
     <div className="max-w-full bg-white rounded-3xl shadow-2xl px-10 py-8 border border-blue-100">
@@ -136,14 +146,6 @@ const DepartmentLeaderPage: React.FC = () => {
       <SubmissionTable data={filteredData} />
       <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       <ToastContainer />
-      {loading && (
-        <div className="fixed left-0 top-0 w-full h-full bg-white bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 pointer-events-none">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-solid"></div>
-          <span className="ml-4 text-xl text-blue-700 font-bold">
-            Loading...
-          </span>
-        </div>
-      )}
     </div>
   );
 };

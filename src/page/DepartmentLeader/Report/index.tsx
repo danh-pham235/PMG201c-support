@@ -6,6 +6,7 @@ import {
   type DepartmentSubmission,
 } from "../../../services/department-leader.service";
 import { toast } from "react-toastify";
+import { useLoadingStore } from "../../../config/zustand";
 
 const getGradeType = (score: number | null) => {
   if (score === null || score === undefined) return "Unknown";
@@ -41,10 +42,12 @@ const gradeColors: Record<string, string> = {
 const ScoreReport: React.FC = () => {
   const [submissions, setSubmissions] = useState<DepartmentSubmission[]>([]);
   const [loading, setLoading] = useState(true);
+  const setGlobalLoading = useLoadingStore((state) => state.setLoading);
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
+      setGlobalLoading(true);
       try {
         const res = await getDepartmentSubmissions(1, 1000);
         setSubmissions(res.data);
@@ -52,17 +55,13 @@ const ScoreReport: React.FC = () => {
         toast.error("Please try again later.");
       }
       setLoading(false);
+      setTimeout(() => setGlobalLoading(false), 1000);
     }
     fetchData();
-  }, []);
+  }, [setGlobalLoading]);
 
   if (loading) {
-    return (
-      <div className="fixed left-0 top-0 w-full h-full bg-white bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 pointer-events-none">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-solid"></div>
-        <span className="ml-4 text-xl text-blue-700 font-bold">Loading...</span>
-      </div>
-    );
+    return null;
   }
 
   // Stats

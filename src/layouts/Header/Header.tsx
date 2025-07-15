@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useAuthStore } from "../../config/zustand";
+import { useAuthStore, useLoadingStore } from "../../config/zustand";
 import { useNavigate } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi";
 
 const baseNavItems = [
   { href: "/", label: "Home" },
@@ -13,6 +14,7 @@ const Header: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
+  const setLoading = useLoadingStore((state) => state.setLoading);
   const navigate = useNavigate();
 
   // Dynamic nav items by role
@@ -21,7 +23,7 @@ const Header: React.FC = () => {
     if (user.role === "Examiner") {
       navItems.push({ href: "/examiner", label: "Examiner" });
     } else if (user.role === "DepartmentLeader") {
-      navItems.push({ href: "/department-leader", label: "Department Leader" });
+      navItems.push({ href: "/department-leader/submissions", label: "Department Leader" });
     } else if (user.role === "Lecturer") {
       navItems.push({ href: "/lecturer", label: "Lecturer" });
     } else if (user.role === "Student") {
@@ -30,11 +32,15 @@ const Header: React.FC = () => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-    setDropdownOpen(false);
-    navigate("/login");
+    setLoading(true);
+    setTimeout(() => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setUser(null);
+      setDropdownOpen(false);
+      setLoading(false);
+      navigate("/login");
+    }, 1000);
   };
 
   return (
@@ -66,7 +72,7 @@ const Header: React.FC = () => {
           {user ? (
             <div className="ml-4 relative">
               <button
-                className="px-6 py-2 bg-gradient-to-r from-green-400 to-blue-400 text-white rounded-full font-semibold shadow flex items-center gap-2 focus:outline-none"
+                className="px-6 py-2 bg-gradient-to-r from-green-400 to-blue-400 text-white rounded-full font-semibold shadow flex items-center gap-2 focus:outline-none hover:scale-105 transition"
                 onClick={() => setDropdownOpen((prev) => !prev)}
               >
                 Hello, {user.name || "User"}
@@ -75,12 +81,12 @@ const Header: React.FC = () => {
                 </svg>
               </button>
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-36 bg-white border border-gray-200 rounded-lg shadow-lg z-50 animate-fade-in">
+                <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 animate-fade-in p-2 flex flex-col gap-2">
                   <button
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                    className="flex items-center gap-2 w-full px-4 py-2 text-red-600 font-bold rounded-xl bg-red-50 hover:bg-red-100 transition shadow-sm text-base"
                     onClick={handleLogout}
                   >
-                    Đăng xuất
+                    <FiLogOut size={18} /> Logout
                   </button>
                 </div>
               )}

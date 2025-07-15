@@ -13,6 +13,8 @@ export const API_SUBMISSION = {
 
 export const API_EXAM = {
   EXAM_EXAMINER: "/Exam/exams-examiner",
+  UPLOAD_EXAM_PAPER: "/Exam/upload-exam-paper",
+  UPLOAD_BAREM: "/Exam/upload-barem", // cần truyền examId phía sau
   AUTO_ASSIGN: "/Exam/assign-lecturers",
 };
 

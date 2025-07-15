@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { jwtDecode } from 'jwt-decode';
 import { googleLogin, logout } from '../services/authService';
+import { create as createLoading } from 'zustand';
 
 interface DecodedJWT {
   'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name': string;
@@ -16,8 +17,13 @@ interface AuthState {
   setUser: (user: { name: string; role?: string } | null) => void;
 }
 
-const savedToken = localStorage.getItem("token");
-const savedUser = localStorage.getItem("user");
+interface LoadingState {
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
+}
+
+const savedToken = sessionStorage.getItem("token");
+const savedUser = sessionStorage.getItem("user");
 
 export const useAuthStore = create<AuthState>((set) => ({
   token: savedToken || null,
@@ -31,27 +37,32 @@ export const useAuthStore = create<AuthState>((set) => ({
         role: decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || 'Unknown',
       };
       set({ token: idToken, user });
-      localStorage.setItem("token", idToken);
-      localStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.setItem("token", idToken);
+      sessionStorage.setItem("user", JSON.stringify(user));
     } catch (error) {
       console.error('Login error:', error);
       set({ token: null, user: null });
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("user");
     }
   },
   logoutUser: async () => {
     await logout();
     set({ token: null, user: null });
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
   },
   setUser: (user) => {
     set({ user });
     if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.setItem("user", JSON.stringify(user));
     } else {
-      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
     }
   },
+}));
+
+export const useLoadingStore = createLoading<LoadingState>((set) => ({
+  loading: false,
+  setLoading: (loading) => set({ loading }),
 }));

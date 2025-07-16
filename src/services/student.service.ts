@@ -21,3 +21,8 @@ export const getGradeByExamId = async (examId: string) => {
   const response = await axiosInstance.get(`${API_SUBMISSION.GET_GRADE_BY_EXAMID}/${examId}`);
   return response.data;
 };
+
+export const getRegradeRequestByStudentId = async () => {
+  const response = await axiosInstance.get(API_REGRADE_REQUEST.GET_BY_STUDENT_ID);
+  return response.data;
+}

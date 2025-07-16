@@ -1,8 +1,8 @@
 import React from "react";
-import ViewRegrade from "../../../components/StudentComponent/ViewRegrade";
+import RequestRegrade from "../../../components/StudentComponent/RequestRegrade";
 
-const ViewRegradePage: React.FC = () => {
-  return <ViewRegrade />;
+const RequestRegradePage: React.FC = () => {
+  return <RequestRegrade />;
 };
 
-export default ViewRegradePage;
+export default RequestRegradePage;

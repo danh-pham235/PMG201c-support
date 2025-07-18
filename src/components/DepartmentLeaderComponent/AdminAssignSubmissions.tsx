@@ -5,10 +5,11 @@ import Pagination from "../../components/DepartmentLeaderComponent/Pagination";
 import {
   autoAssignLecturers,
   getDepartmentSubmissions,
-  type DepartmentSubmission,
-} from "../../services/department-leader.service";
+  publishScores,
+  } from "../../services/department-leader.service";
 import { toast, ToastContainer } from "react-toastify";
 import { useLoadingStore } from "../../config/zustand";
+import type { DepartmentSubmission } from "../../types/submission.type";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -16,7 +17,6 @@ const AdminAssignSubmissions: React.FC = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<DepartmentSubmission[]>([]);
   const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
   const setGlobalLoading = useLoadingStore((state) => state.setLoading);
 
   // Filter/search states
@@ -26,7 +26,6 @@ const AdminAssignSubmissions: React.FC = () => {
   const [lecturerFilter, setLecturerFilter] = useState("");
 
   useEffect(() => {
-    setLoading(true);
     setGlobalLoading(true);
     getDepartmentSubmissions(page, ITEMS_PER_PAGE)
       .then((res) => {
@@ -34,7 +33,6 @@ const AdminAssignSubmissions: React.FC = () => {
         setTotal(res.total);
       })
       .finally(() => {
-        setLoading(false);
         setTimeout(() => setGlobalLoading(false), 1000);
       });
   }, [page, setGlobalLoading]);
@@ -68,6 +66,10 @@ const AdminAssignSubmissions: React.FC = () => {
   const allGraded =
     data.length > 0 && data.every((item) => item.status === "Graded");
 
+  // Check if all submissions are graded
+  const allPublished =
+    data.length > 0 && data.every((item) => item.status === "Published");
+
   const handleAutoAssign = async () => {
     if (!data.length) {
       alert("No submissions available to auto assign lecturers.");
@@ -75,7 +77,6 @@ const AdminAssignSubmissions: React.FC = () => {
     }
     const examId = data[0].examId;
     try {
-      setLoading(true);
       setGlobalLoading(true);
       await autoAssignLecturers(examId); // examCodeFilter là assignmentId
       toast.success("Lecturers assigned successfully!");
@@ -85,14 +86,29 @@ const AdminAssignSubmissions: React.FC = () => {
     } catch (error: any) {
       toast.error(error?.response?.data || "Auto assign failed!");
     } finally {
-      setLoading(false);
       setTimeout(() => setGlobalLoading(false), 1000);
     }
   };
 
   // Publish scores handler
-  const handlePublishScores = () => {
-    alert("Scores have been published!");
+  const handlePublishScores = async () => {
+    if (!data.length) {
+      toast.error("No submissions to publish.");
+      return;
+    }
+    const examId = data[0].examId;
+    try {
+      setGlobalLoading(true);
+      await publishScores(examId);
+      toast.success("Scores have been published!");
+      const res = await getDepartmentSubmissions(page, ITEMS_PER_PAGE);
+      setData(res.data);
+      setTotal(res.total);
+    } catch (error: any) {
+      toast.error(error?.response?.data || "Publish failed!");
+    } finally {
+      setTimeout(() => setGlobalLoading(false), 1000);
+    }
   };
 
   // Clear filters
@@ -103,8 +119,6 @@ const AdminAssignSubmissions: React.FC = () => {
     setLecturerFilter("");
   };
 
-  if (loading) return null;
-
   return (
     <div className="max-w-full bg-white rounded-3xl shadow-2xl px-10 py-8 border border-blue-100">
       <div className="flex justify-between items-center mb-6">
@@ -112,13 +126,15 @@ const AdminAssignSubmissions: React.FC = () => {
           Submissions
         </h2>
         <div className="flex gap-4">
-          <button
-            className="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700 transition"
-            onClick={handleAutoAssign}
-            type="button"
-          >
-            Auto Assign
-          </button>
+          {!allPublished && (
+            <button
+              className="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700 transition"
+              onClick={handleAutoAssign}
+              type="button"
+            >
+              Auto Assign
+            </button>
+          )}
           {allGraded && (
             <button
               className="bg-green-600 text-white px-6 py-2 rounded font-bold hover:bg-green-700 transition"

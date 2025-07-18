@@ -18,6 +18,7 @@ export const API_EXAM = {
   UPLOAD_BAREM: "/Exam/upload-barem", // cần truyền examId phía sau
   AUTO_ASSIGN: "/Exam/assign-lecturers",
   STUDENT_EXAMS: "/Exam/student-exams",
+  PUBLISH_SCORES: "/Exam/publish-scores",
 };
 
 export const API_REGRADE_REQUEST = {
@@ -27,4 +28,5 @@ export const API_REGRADE_REQUEST = {
 
 export const API_GRADE_ROUND = {
   GET_ROUNDS_BY_STUDENT: "/GradeRound/student",
+  GET_ROUND_BY_SUBMISSIONID: "/GradeRound/submission",
 }

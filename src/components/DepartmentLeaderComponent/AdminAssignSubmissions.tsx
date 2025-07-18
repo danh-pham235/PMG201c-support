@@ -5,6 +5,7 @@ import Pagination from "../../components/DepartmentLeaderComponent/Pagination";
 import {
   autoAssignLecturers,
   getDepartmentSubmissions,
+  publishScores,
   type DepartmentSubmission,
 } from "../../services/department-leader.service";
 import { toast, ToastContainer } from "react-toastify";
@@ -68,6 +69,10 @@ const AdminAssignSubmissions: React.FC = () => {
   const allGraded =
     data.length > 0 && data.every((item) => item.status === "Graded");
 
+  // Check if all submissions are graded
+  const allPublished =
+    data.length > 0 && data.every((item) => item.status === "Published");
+
   const handleAutoAssign = async () => {
     if (!data.length) {
       alert("No submissions available to auto assign lecturers.");
@@ -91,8 +96,26 @@ const AdminAssignSubmissions: React.FC = () => {
   };
 
   // Publish scores handler
-  const handlePublishScores = () => {
-    alert("Scores have been published!");
+  const handlePublishScores = async () => {
+    if (!data.length) {
+      toast.error("No submissions to publish.");
+      return;
+    }
+    const examId = data[0].examId;
+    try {
+      setLoading(true);
+      setGlobalLoading(true);
+      await publishScores(examId);
+      toast.success("Scores have been published!");
+      const res = await getDepartmentSubmissions(page, ITEMS_PER_PAGE);
+      setData(res.data);
+      setTotal(res.total);
+    } catch (error: any) {
+      toast.error(error?.response?.data || "Publish failed!");
+    } finally {
+      setLoading(false);
+      setTimeout(() => setGlobalLoading(false), 1000);
+    }
   };
 
   // Clear filters
@@ -112,13 +135,15 @@ const AdminAssignSubmissions: React.FC = () => {
           Submissions
         </h2>
         <div className="flex gap-4">
-          <button
-            className="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700 transition"
-            onClick={handleAutoAssign}
-            type="button"
-          >
-            Auto Assign
-          </button>
+          {!allPublished && (
+            <button
+              className="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700 transition"
+              onClick={handleAutoAssign}
+              type="button"
+            >
+              Auto Assign
+            </button>
+          )}
           {allGraded && (
             <button
               className="bg-green-600 text-white px-6 py-2 rounded font-bold hover:bg-green-700 transition"

@@ -18,6 +18,7 @@ export const API_EXAM = {
   UPLOAD_BAREM: "/Exam/upload-barem", // cần truyền examId phía sau
   AUTO_ASSIGN: "/Exam/assign-lecturers",
   STUDENT_EXAMS: "/Exam/student-exams",
+  PUBLISH_SCORES: "/Exam/publish-scores",
 };
 
 export const API_REGRADE_REQUEST = {

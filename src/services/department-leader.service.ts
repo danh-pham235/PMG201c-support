@@ -19,11 +19,15 @@ export interface DepartmentSubmissionResponse {
 
 export async function getDepartmentSubmissions(page: number, pageSize: number) {
   const res = await axiosInstance.get<DepartmentSubmissionResponse>(
-    `${API_SUBMISSION.GET_SUBMISSION}/?page=${page}&pageSize=${pageSize}`
+    `${API_SUBMISSION.GET_SUBMISSION}?page=${page}&pageSize=${pageSize}`
   );
   return res.data;
 }
 
 export async function autoAssignLecturers(examId: string) {
   return axiosInstance.post(`${API_EXAM.AUTO_ASSIGN}/${examId}`);
+}
+
+export async function publishScores(examId: string) {
+  return axiosInstance.post(`${API_EXAM.PUBLISH_SCORES}/${examId}`);
 }

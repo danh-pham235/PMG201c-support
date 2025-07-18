@@ -51,7 +51,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
       >
         <option value="">All Status</option>
         <option value="Graded">Graded</option>
-        <option value="Grading">Grading</option>
+        <option value="Published">Published</option>
         <option value="Not assigned">Not assigned</option>
       </select>
     </div>

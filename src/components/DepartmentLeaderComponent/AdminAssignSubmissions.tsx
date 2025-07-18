@@ -6,10 +6,10 @@ import {
   autoAssignLecturers,
   getDepartmentSubmissions,
   publishScores,
-  type DepartmentSubmission,
-} from "../../services/department-leader.service";
+  } from "../../services/department-leader.service";
 import { toast, ToastContainer } from "react-toastify";
 import { useLoadingStore } from "../../config/zustand";
+import type { DepartmentSubmission } from "../../types/submission.type";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -17,7 +17,6 @@ const AdminAssignSubmissions: React.FC = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<DepartmentSubmission[]>([]);
   const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
   const setGlobalLoading = useLoadingStore((state) => state.setLoading);
 
   // Filter/search states
@@ -27,7 +26,6 @@ const AdminAssignSubmissions: React.FC = () => {
   const [lecturerFilter, setLecturerFilter] = useState("");
 
   useEffect(() => {
-    setLoading(true);
     setGlobalLoading(true);
     getDepartmentSubmissions(page, ITEMS_PER_PAGE)
       .then((res) => {
@@ -35,7 +33,6 @@ const AdminAssignSubmissions: React.FC = () => {
         setTotal(res.total);
       })
       .finally(() => {
-        setLoading(false);
         setTimeout(() => setGlobalLoading(false), 1000);
       });
   }, [page, setGlobalLoading]);
@@ -80,7 +77,6 @@ const AdminAssignSubmissions: React.FC = () => {
     }
     const examId = data[0].examId;
     try {
-      setLoading(true);
       setGlobalLoading(true);
       await autoAssignLecturers(examId); // examCodeFilter là assignmentId
       toast.success("Lecturers assigned successfully!");
@@ -90,7 +86,6 @@ const AdminAssignSubmissions: React.FC = () => {
     } catch (error: any) {
       toast.error(error?.response?.data || "Auto assign failed!");
     } finally {
-      setLoading(false);
       setTimeout(() => setGlobalLoading(false), 1000);
     }
   };
@@ -103,7 +98,6 @@ const AdminAssignSubmissions: React.FC = () => {
     }
     const examId = data[0].examId;
     try {
-      setLoading(true);
       setGlobalLoading(true);
       await publishScores(examId);
       toast.success("Scores have been published!");
@@ -113,7 +107,6 @@ const AdminAssignSubmissions: React.FC = () => {
     } catch (error: any) {
       toast.error(error?.response?.data || "Publish failed!");
     } finally {
-      setLoading(false);
       setTimeout(() => setGlobalLoading(false), 1000);
     }
   };
@@ -125,8 +118,6 @@ const AdminAssignSubmissions: React.FC = () => {
     setExamCodeFilter("");
     setLecturerFilter("");
   };
-
-  if (loading) return null;
 
   return (
     <div className="max-w-full bg-white rounded-3xl shadow-2xl px-10 py-8 border border-blue-100">

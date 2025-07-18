@@ -28,4 +28,5 @@ export const API_REGRADE_REQUEST = {
 
 export const API_GRADE_ROUND = {
   GET_ROUNDS_BY_STUDENT: "/GradeRound/student",
+  GET_ROUND_BY_SUBMISSIONID: "/GradeRound/submission",
 }

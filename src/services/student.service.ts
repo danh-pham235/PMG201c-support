@@ -1,28 +1,28 @@
 import axiosInstance from "../config/axiosConfig";
-import { API_REGRADE_REQUEST } from "../constants/apiConstants";
+import { API_EXAM, API_GRADE_ROUND, API_REGRADE_REQUEST, API_SUBMISSION } from "../constants/apiConstants";
 
-export async function getStudentScore(): Promise<any[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        {
-          type: "Original Score",
-          score: 7.5,
-          date: "2025-06-22T23:30:00Z",
-          note: "Bài làm tốt, trình bày rõ ràng."
-        },
-        {
-          type: "Regrade 1",
-          score: 8.0,
-          date: "2025-06-23T23:30:00Z",
-          note: "Đã cải thiện phần trình bày."
-        }
-      ]);
-    }, 200);
-  });
-}
 
 export const createRegradeRequest = async (data: any) => {
   const response = await axiosInstance.post(API_REGRADE_REQUEST.CREATE, data);
   return response.data; 
 };
+
+export const getExamsByStudent = async () => {
+  const response = await axiosInstance.get(API_EXAM.STUDENT_EXAMS);
+  return response.data;
+}
+
+export const getGradeRoundsByStudent = async (examId: string) => {
+  const response = await axiosInstance.get(`${API_GRADE_ROUND.GET_ROUNDS_BY_STUDENT}?examId=${examId}`);
+  return response.data;
+};
+
+export const getGradeByExamId = async (examId: string) => {
+  const response = await axiosInstance.get(`${API_SUBMISSION.GET_GRADE_BY_EXAMID}/${examId}`);
+  return response.data;
+};
+
+export const getRegradeRequestByStudentId = async () => {
+  const response = await axiosInstance.get(API_REGRADE_REQUEST.GET_BY_STUDENT_ID);
+  return response.data;
+}

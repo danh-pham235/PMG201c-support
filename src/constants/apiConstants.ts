@@ -24,6 +24,8 @@ export const API_EXAM = {
 export const API_REGRADE_REQUEST = {
   CREATE: "/Regrade/create-request",
   GET_BY_STUDENT_ID: "/Regrade/view-request",
+  GET_ALL_REQUESTS: "/Regrade/get-all",
+  UPDATE_STATUS: "/Regrade/confirm-request",
 };
 
 export const API_GRADE_ROUND = {

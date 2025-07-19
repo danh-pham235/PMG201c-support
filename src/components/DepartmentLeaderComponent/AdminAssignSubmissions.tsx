@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FilterBar from "../../components/DepartmentLeaderComponent/FilterBar";
 import SubmissionTable from "../../components/DepartmentLeaderComponent/SubmissionTable";
-import Pagination from "../../components/DepartmentLeaderComponent/Pagination";
+import Pagination from "../Common/Pagination";
 import {
   autoAssignLecturers,
   getDepartmentSubmissions,

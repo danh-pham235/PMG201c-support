@@ -5,6 +5,8 @@ import {
   getAllRegradeRequests,
   updateRegradeRequestStatus,
 } from "../../services/examinerService";
+import { useLoadingStore } from "../../config/zustand";
+import { toast, ToastContainer } from "react-toastify";
 
 interface RegradeRequest {
   regradeRequestId: string;
@@ -20,25 +22,17 @@ const RegradeDashboard: React.FC = () => {
   const [requests, setRequests] = useState<RegradeRequest[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const setGlobalLoading = useLoadingStore((state) => state.setLoading);
 
   // Get all
   useEffect(() => {
-    setLoading(true);
+    setGlobalLoading(true);
     getAllRegradeRequests(page, PAGE_SIZE)
-      .then((data) => {
-        let items: RegradeRequest[] = [];
-        if (Array.isArray(data.data)) {
-          items = data.data;
-        } else {
-          items = Object.keys(data)
-            .filter((k) => !isNaN(Number(k)))
-            .map((k) => data[k]);
-        }
-        setRequests(items);
-        setTotal(data.total || items.length);
+      .then((res) => {
+        setRequests(res.data);
+        setTotal(res.total);
       })
-      .finally(() => setLoading(false));
+      .finally(() => setGlobalLoading(false));
   }, [page]);
 
   // Update status
@@ -46,20 +40,18 @@ const RegradeDashboard: React.FC = () => {
     regradeRequestId: string,
     status: "Approved" | "Rejected"
   ) => {
-    setLoading(true);
-    await updateRegradeRequestStatus(regradeRequestId, status);
-    const data = await getAllRegradeRequests(page, PAGE_SIZE);
-    let items: RegradeRequest[] = [];
-    if (Array.isArray(data.data)) {
-      items = data.data;
-    } else {
-      items = Object.keys(data)
-        .filter((k) => !isNaN(Number(k)))
-        .map((k) => data[k]);
+    try {
+      setGlobalLoading(true);
+      await updateRegradeRequestStatus(regradeRequestId, status);
+      toast.success("Regrade request status updated successfully.");
+      const data = await getAllRegradeRequests(page, PAGE_SIZE);
+      setRequests(data.data);
+      setTotal(data.total);
+    } catch (error: any) {
+      toast.error(error?.response?.data || "Regrade request status updated failed!");
+    } finally {
+      setTimeout(() => setGlobalLoading(false), 1000);
     }
-    setRequests(items);
-    setTotal(data.total || items.length);
-    setLoading(false);
   };
 
   const statusCell = (status: string) => {
@@ -82,102 +74,103 @@ const RegradeDashboard: React.FC = () => {
     );
   };
 
-return (
-  <div className="max-w-7xl w-full mx-auto mt-16">
-    <div className="bg-white rounded-2xl shadow-xl border border-blue-100 p-8">
-      <h2 className="text-3xl font-extrabold mb-8 text-blue-900 text-center tracking-tight">
-        Regrade Requests Dashboard
-      </h2>
-      <div className="overflow-x-auto">
-        <table className="w-full border border-blue-200 rounded-xl shadow overflow-hidden text-base">
-          <thead>
-            <tr className="bg-gradient-to-r from-blue-400 to-blue-300 text-white">
-              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
-                No
-              </th>
-              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
-                Student ID
-              </th>
-              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
-                Exam Code
-              </th>
-              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
-                Reason
-              </th>
-              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={6} className="text-center py-8 text-gray-400">
-                  Loading...
-                </td>
+  return (
+    <div className="max-w-7xl w-full mx-auto mt-16">
+      <div className="bg-white rounded-2xl shadow-xl border border-blue-100 p-8">
+        <h2 className="text-3xl font-extrabold mb-8 text-blue-900 text-center tracking-tight">
+          Regrade Requests Dashboard
+        </h2>
+        <div className="overflow-x-auto">
+          <table className="w-full border border-blue-200 rounded-xl shadow overflow-hidden text-base">
+            <thead>
+              <tr className="bg-gradient-to-r from-blue-400 to-blue-300 text-white">
+                <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                  No
+                </th>
+                <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                  Student ID
+                </th>
+                <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                  Exam Code
+                </th>
+                <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                  Reason
+                </th>
+                <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                  Action
+                </th>
               </tr>
-            ) : requests.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center py-8 text-gray-400">
-                  No regrade requests found.
-                </td>
-              </tr>
-            ) : (
-              requests.map((req, idx) => (
-                <tr
-                  key={req.regradeRequestId}
-                  className={`border-b border-blue-100 transition hover:bg-blue-50 ${
-                    idx % 2 === 0 ? "bg-white" : "bg-blue-50"
-                  }`}
-                >
-                  <td className="px-6 py-3 text-center font-semibold">
-                    {(page - 1) * PAGE_SIZE + idx + 1}
-                  </td>
-                  <td className="px-6 py-3 text-center">{req.studentCode}</td>
-                  <td className="px-6 py-3 text-center">{req.examCode}</td>
-                  <td className="px-6 py-3 text-center">{req.reason}</td>
-                  <td className="px-6 py-3 text-center">
-                    {statusCell(req.status)}
-                  </td>
-                  <td className="px-6 py-3 text-center">
-                    {req.status === "Pending" && (
-                      <div className="flex justify-center gap-3">
-                        <button
-                          className="flex items-center gap-1 px-4 py-1.5 bg-green-500 text-white rounded-full shadow hover:bg-green-600 transition font-semibold"
-                          onClick={() =>
-                            handleUpdateStatus(req.regradeRequestId, "Approved")
-                          }
-                        >
-                          <FaCheckCircle /> Approve
-                        </button>
-                        <button
-                          className="flex items-center gap-1 px-4 py-1.5 bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition font-semibold"
-                          onClick={() =>
-                            handleUpdateStatus(req.regradeRequestId, "Rejected")
-                          }
-                        >
-                          <FaTimesCircle /> Reject
-                        </button>
-                      </div>
-                    )}
+            </thead>
+            <tbody>
+              {requests.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-8 text-gray-400">
+                    No regrade requests found.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                requests.map((req, idx) => (
+                  <tr
+                    key={req.regradeRequestId}
+                    className={`border-b border-blue-100 transition hover:bg-blue-50 ${
+                      idx % 2 === 0 ? "bg-white" : "bg-blue-50"
+                    }`}
+                  >
+                    <td className="px-6 py-3 text-center font-semibold">
+                      {(page - 1) * PAGE_SIZE + idx + 1}
+                    </td>
+                    <td className="px-6 py-3 text-center">{req.studentCode}</td>
+                    <td className="px-6 py-3 text-center">{req.examCode}</td>
+                    <td className="px-6 py-3 text-center">{req.reason}</td>
+                    <td className="px-6 py-3 text-center">
+                      {statusCell(req.status)}
+                    </td>
+                    <td className="px-6 py-3 text-center">
+                      {req.status === "Pending" && (
+                        <div className="flex justify-center gap-3">
+                          <button
+                            className="flex items-center gap-1 px-4 py-1.5 bg-green-500 text-white rounded-full shadow hover:bg-green-600 transition font-semibold"
+                            onClick={() =>
+                              handleUpdateStatus(
+                                req.regradeRequestId,
+                                "Approved"
+                              )
+                            }
+                          >
+                            <FaCheckCircle /> Approve
+                          </button>
+                          <button
+                            className="flex items-center gap-1 px-4 py-1.5 bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition font-semibold"
+                            onClick={() =>
+                              handleUpdateStatus(
+                                req.regradeRequestId,
+                                "Rejected"
+                              )
+                            }
+                          >
+                            <FaTimesCircle /> Reject
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        <Pagination
+          page={page}
+          totalPages={Math.ceil(total / PAGE_SIZE)}
+          setPage={setPage}
+        />
+        <ToastContainer />
       </div>
-      <Pagination
-        page={page}
-        totalPages={Math.ceil(total / PAGE_SIZE)}
-        setPage={setPage}
-      />
     </div>
-  </div>
-);
+  );
 };
 
 export default RegradeDashboard;

@@ -1,60 +1,89 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaCheckCircle, FaTimesCircle, FaHourglassHalf } from "react-icons/fa";
+import Pagination from "../Common/Pagination"; // Đã có sẵn trong workspace
+import {
+  getAllRegradeRequests,
+  updateRegradeRequestStatus,
+} from "../../services/examinerService";
 
 interface RegradeRequest {
-  id: string;
-  studentId: string;
-  examId: string;
+  regradeRequestId: string;
+  studentCode: string;
+  examCode: string;
   reason: string;
   status: "Pending" | "Approved" | "Rejected";
 }
 
-const mockRequests: RegradeRequest[] = [
-  {
-    id: "REQ001",
-    studentId: "ST001",
-    examId: "PMG201c_SU25_PE_1234566",
-    reason: "I believe my answer for question 2 was correct.",
-    status: "Pending",
-  },
-  {
-    id: "REQ002",
-    studentId: "ST002",
-    examId: "PMG201c_SU25_PE_1234567",
-    reason: "Please recheck my score for question 5.",
-    status: "Approved",
-  },
-  {
-    id: "REQ003",
-    studentId: "ST003",
-    examId: "PMG201c_SU25_PE_1234568",
-    reason: "I think there was a mistake in grading.",
-    status: "Rejected",
-  },
-];
+const PAGE_SIZE = 10;
 
-const statusCell = (status: string) => {
-  if (status === "Approved")
+const RegradeDashboard: React.FC = () => {
+  const [requests, setRequests] = useState<RegradeRequest[]>([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  // Get all
+  useEffect(() => {
+    setLoading(true);
+    getAllRegradeRequests(page, PAGE_SIZE)
+      .then((data) => {
+        let items: RegradeRequest[] = [];
+        if (Array.isArray(data.data)) {
+          items = data.data;
+        } else {
+          items = Object.keys(data)
+            .filter((k) => !isNaN(Number(k)))
+            .map((k) => data[k]);
+        }
+        setRequests(items);
+        setTotal(data.total || items.length);
+      })
+      .finally(() => setLoading(false));
+  }, [page]);
+
+  // Update status
+  const handleUpdateStatus = async (
+    regradeRequestId: string,
+    status: "Approved" | "Rejected"
+  ) => {
+    setLoading(true);
+    await updateRegradeRequestStatus(regradeRequestId, status);
+    const data = await getAllRegradeRequests(page, PAGE_SIZE);
+    let items: RegradeRequest[] = [];
+    if (Array.isArray(data.data)) {
+      items = data.data;
+    } else {
+      items = Object.keys(data)
+        .filter((k) => !isNaN(Number(k)))
+        .map((k) => data[k]);
+    }
+    setRequests(items);
+    setTotal(data.total || items.length);
+    setLoading(false);
+  };
+
+  const statusCell = (status: string) => {
+    if (status === "Approved")
+      return (
+        <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 font-semibold rounded-full text-sm">
+          <FaCheckCircle className="mr-1" /> Approved
+        </span>
+      );
+    if (status === "Rejected")
+      return (
+        <span className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 font-semibold rounded-full text-sm">
+          <FaTimesCircle className="mr-1" /> Rejected
+        </span>
+      );
     return (
-      <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 font-semibold rounded-full text-sm">
-        <FaCheckCircle className="mr-1" /> Approved
+      <span className="inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-700 font-semibold rounded-full text-sm">
+        <FaHourglassHalf className="mr-1" /> Pending
       </span>
     );
-  if (status === "Rejected")
-    return (
-      <span className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 font-semibold rounded-full text-sm">
-        <FaTimesCircle className="mr-1" /> Rejected
-      </span>
-    );
-  return (
-    <span className="inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-700 font-semibold rounded-full text-sm">
-      <FaHourglassHalf className="mr-1" /> Pending
-    </span>
-  );
-};
+  };
 
-const RegradeDashboard: React.FC = () => (
-  <div className="max-w-5xl mx-auto mt-16">
+return (
+  <div className="max-w-7xl w-full mx-auto mt-16">
     <div className="bg-white rounded-2xl shadow-xl border border-blue-100 p-8">
       <h2 className="text-3xl font-extrabold mb-8 text-blue-900 text-center tracking-tight">
         Regrade Requests Dashboard
@@ -63,41 +92,92 @@ const RegradeDashboard: React.FC = () => (
         <table className="w-full border border-blue-200 rounded-xl shadow overflow-hidden text-base">
           <thead>
             <tr className="bg-gradient-to-r from-blue-400 to-blue-300 text-white">
-              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">Request ID</th>
-              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">Student ID</th>
-              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">Exam Code</th>
-              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">Reason</th>
-              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                No
+              </th>
+              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                Student ID
+              </th>
+              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                Exam Code
+              </th>
+              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                Reason
+              </th>
+              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-3 text-center font-bold text-base uppercase tracking-wider">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
-            {mockRequests.length === 0 ? (
+            {loading ? (
               <tr>
-                <td colSpan={5} className="text-center py-8 text-gray-400">
+                <td colSpan={6} className="text-center py-8 text-gray-400">
+                  Loading...
+                </td>
+              </tr>
+            ) : requests.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center py-8 text-gray-400">
                   No regrade requests found.
                 </td>
               </tr>
             ) : (
-              mockRequests.map((req, idx) => (
+              requests.map((req, idx) => (
                 <tr
-                  key={req.id}
+                  key={req.regradeRequestId}
                   className={`border-b border-blue-100 transition hover:bg-blue-50 ${
                     idx % 2 === 0 ? "bg-white" : "bg-blue-50"
                   }`}
                 >
-                  <td className="px-6 py-3 text-center">{req.id}</td>
-                  <td className="px-6 py-3 text-center">{req.studentId}</td>
-                  <td className="px-6 py-3 text-center">{req.examId}</td>
+                  <td className="px-6 py-3 text-center font-semibold">
+                    {(page - 1) * PAGE_SIZE + idx + 1}
+                  </td>
+                  <td className="px-6 py-3 text-center">{req.studentCode}</td>
+                  <td className="px-6 py-3 text-center">{req.examCode}</td>
                   <td className="px-6 py-3 text-center">{req.reason}</td>
-                  <td className="px-6 py-3 text-center">{statusCell(req.status)}</td>
+                  <td className="px-6 py-3 text-center">
+                    {statusCell(req.status)}
+                  </td>
+                  <td className="px-6 py-3 text-center">
+                    {req.status === "Pending" && (
+                      <div className="flex justify-center gap-3">
+                        <button
+                          className="flex items-center gap-1 px-4 py-1.5 bg-green-500 text-white rounded-full shadow hover:bg-green-600 transition font-semibold"
+                          onClick={() =>
+                            handleUpdateStatus(req.regradeRequestId, "Approved")
+                          }
+                        >
+                          <FaCheckCircle /> Approve
+                        </button>
+                        <button
+                          className="flex items-center gap-1 px-4 py-1.5 bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition font-semibold"
+                          onClick={() =>
+                            handleUpdateStatus(req.regradeRequestId, "Rejected")
+                          }
+                        >
+                          <FaTimesCircle /> Reject
+                        </button>
+                      </div>
+                    )}
+                  </td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
       </div>
+      <Pagination
+        page={page}
+        totalPages={Math.ceil(total / PAGE_SIZE)}
+        setPage={setPage}
+      />
     </div>
   </div>
 );
+};
 
 export default RegradeDashboard;

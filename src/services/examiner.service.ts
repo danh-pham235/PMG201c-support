@@ -1,5 +1,5 @@
 import axiosInstance from "../config/axiosConfig";
-import { API_SUBMISSION, API_EXAM } from "../constants/apiConstants";
+import { API_SUBMISSION, API_EXAM, API_REGRADE_REQUEST } from "../constants/apiConstants";
 
 export const uploadSubmission = async (examId: string, file: File) => {
   const formData = new FormData();
@@ -40,5 +40,15 @@ export const uploadBarem = async (examId: string, file: File) => {
   const response = await axiosInstance.post(`${API_EXAM.UPLOAD_BAREM}/${examId}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+  return response.data;
+};
+
+export const getAllRegradeRequests = async (page = 1, pageSize = 10) => {
+  const response = await axiosInstance.get(`${API_REGRADE_REQUEST.GET_ALL_REQUESTS}?page=${page}&pageSize=${pageSize}`);
+  return response.data;
+}
+
+export const updateRegradeRequestStatus = async (regradeRequestId: string, status: string) => {
+  const response = await axiosInstance.post(`${API_REGRADE_REQUEST.UPDATE_STATUS}`, { regradeRequestId, status });
   return response.data;
 };

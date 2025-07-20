@@ -1,29 +1,26 @@
 import axiosInstance from "../config/axiosConfig";
-import { API_EXAM, API_SUBMISSION } from "../constants/apiConstants";
+import { API_EXAM, API_GRADE_ROUND, API_SUBMISSION } from "../constants/apiConstants";
+import type { GradeRound } from "../types/grade-round.type";
+import type { DepartmentSubmissionResponse } from "../types/submission.type";
 
-export interface DepartmentSubmission {
-  submissionId: string;
-  studentCode: string;
-  examId: string;
-  examCode: string;
-  aiScore: number | null; 
-  finalScore: number | null;  
-  status: string;
-  assignedLecturer: string;
-}
-
-export interface DepartmentSubmissionResponse {
-  total: number;
-  data: DepartmentSubmission[];
-}
 
 export async function getDepartmentSubmissions(page: number, pageSize: number) {
   const res = await axiosInstance.get<DepartmentSubmissionResponse>(
-    `${API_SUBMISSION.GET_SUBMISSION}/?page=${page}&pageSize=${pageSize}`
+    `${API_SUBMISSION.GET_SUBMISSION}?page=${page}&pageSize=${pageSize}`
   );
   return res.data;
 }
 
 export async function autoAssignLecturers(examId: string) {
   return axiosInstance.post(`${API_EXAM.AUTO_ASSIGN}/${examId}`);
+}
+
+export async function publishScores(examId: string) {
+  return axiosInstance.post(`${API_EXAM.PUBLISH_SCORES}/${examId}`);
+}
+
+export async function getGradeRoundsBySubmissionId(submissionId: string) {
+  return axiosInstance.get<GradeRound[]>(
+    `${API_GRADE_ROUND.GET_ROUND_BY_SUBMISSIONID}/${submissionId}`
+  ).then(res => res.data);
 }

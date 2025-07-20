@@ -20,17 +20,22 @@ export const API_EXAM = {
   VIEW_BAREM: "/Exam/view-barem",
   AUTO_ASSIGN: "/Exam/assign-lecturers",
   STUDENT_EXAMS: "/Exam/student-exams",
+  PUBLISH_SCORES: "/Exam/publish-scores",
 };
 
 export const API_REGRADE_REQUEST = {
   CREATE: "/Regrade/create-request",
   GET_BY_STUDENT_ID: "/Regrade/view-request",
+  GET_ALL_REQUESTS: "/Regrade/get-all",
+  UPDATE_STATUS: "/Regrade/confirm-request",
 };
 
 export const API_GRADE_ROUND = {
   GET_ROUNDS_BY_STUDENT: "/GradeRound/student",
+  GET_ROUND_BY_SUBMISSIONID: "/GradeRound/submission",
 }
 
 export const API_DISTRIBUTION = {
   ASSIGNED: "/Distribution/assigned",
 };
+  

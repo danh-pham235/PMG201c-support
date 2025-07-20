@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { getDepartmentSubmissions, type DepartmentSubmission } from "../../services/department-leader.service";
 import { useLoadingStore } from "../../config/zustand";
 import { toast } from "react-toastify";
 import PieChartReport from "./CircleChart";
 import LineChart from "./LineChart";
+import type { DepartmentSubmission } from "../../types/submission.type";
+import { getDepartmentSubmissions } from "../../services/department-leader.service";
 
 const getGradeType = (score: number | null) => {
   if (score === null || score === undefined) return "Unknown";

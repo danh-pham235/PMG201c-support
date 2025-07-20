@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { uploadExamPaper, uploadBarem, getAssignmentsExaminer } from "../../services/examinerService";
+import { uploadExamPaper, uploadBarem, getAssignmentsExaminer } from "../../services/examiner.service";
 import { FaFileUpload } from "react-icons/fa";
 import { MdOutlineAssignment, MdOutlineRuleFolder } from "react-icons/md";
 import { useLoadingStore } from "../../config/zustand";

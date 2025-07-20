@@ -10,12 +10,14 @@ export const API_SUBMISSION = {
   UPLOAD: "/Submission/upload-submission",
   GET_SUBMISSION: "/Submission/submission-table",
   GET_GRADE_BY_EXAMID: "/Submission/get-grades",
+  GET_SUBMISSION_DETAIL: "/Submission/submission-detail",
 };
 
 export const API_EXAM = {
   EXAM_EXAMINER: "/Exam/exams-examiner",
   UPLOAD_EXAM_PAPER: "/Exam/upload-exam-paper",
   UPLOAD_BAREM: "/Exam/upload-barem", // cần truyền examId phía sau
+  VIEW_BAREM: "/Exam/view-barem",
   AUTO_ASSIGN: "/Exam/assign-lecturers",
   STUDENT_EXAMS: "/Exam/student-exams",
 };
@@ -28,3 +30,7 @@ export const API_REGRADE_REQUEST = {
 export const API_GRADE_ROUND = {
   GET_ROUNDS_BY_STUDENT: "/GradeRound/student",
 }
+
+export const API_DISTRIBUTION = {
+  ASSIGNED: "/Distribution/assigned",
+};

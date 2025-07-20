@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { jwtDecode } from 'jwt-decode';
-import { googleLogin, logout } from '../services/authService';
+import { googleLogin, logout } from '../services/auth.service';
 import { create as createLoading } from 'zustand';
 
 interface DecodedJWT {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
-import { uploadSubmission, getAssignmentsExaminer } from "../../services/examinerService";
+import { uploadSubmission, getAssignmentsExaminer } from "../../services/examiner.service";
 import { MdOutlineUploadFile } from "react-icons/md";
 import { useLoadingStore } from "../../config/zustand";
 

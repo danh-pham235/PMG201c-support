@@ -4,7 +4,7 @@ import Pagination from "../Common/Pagination"; // Đã có sẵn trong workspace
 import {
   getAllRegradeRequests,
   updateRegradeRequestStatus,
-} from "../../services/examinerService";
+} from "../../services/examiner.service";
 import { useLoadingStore } from "../../config/zustand";
 import { toast, ToastContainer } from "react-toastify";
 

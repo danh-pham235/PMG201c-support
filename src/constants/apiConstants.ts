@@ -4,6 +4,8 @@ export const API_USER = {
   GOOGLE_LOGIN: "/User/google-login",
   LOGOUT: "/User/logout",
   IMPORT_USERS: "/User/import-users",
+  GET_USERS: "/User/get-users",
+  UPDATE_USER: "/User/update-user", // cần truyền userId phía sau
 };
 
 export const API_SUBMISSION = {

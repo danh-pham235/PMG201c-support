@@ -29,6 +29,8 @@ const Header: React.FC = () => {
       navItems.push({ href: "/lecturer", label: "Lecturer" });
     } else if (user.role === "Student") {
       navItems.push({ href: "/student", label: "Student" });
+    } else if (user.role === "Admin") {
+      navItems.push({ href: "/admin", label: "Admin" });
     }
   }
 

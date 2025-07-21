@@ -16,3 +16,8 @@ export const getBarem = async (examId: string) => {
   const response = await axiosInstance.get(`${API_EXAM.VIEW_BAREM}/${examId}`);
   return response.data;
 };
+
+export const aiGrade = async (submissionId: string) => {
+  const response = await axiosInstance.get(`${API_SUBMISSION.AI_SCORE}/${submissionId}`);
+  return response.data;
+}

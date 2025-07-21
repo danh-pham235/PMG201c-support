@@ -2,6 +2,7 @@ import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
 import type { RegradeRequest } from "../../types/regrade-request.type";
 import { getRegradeRequestByStudentId } from "../../services/student.service";
+import { useLoadingStore } from "../../config/zustand";
 
 const statusCell = (status: string) => {
   if (status === "Approved")
@@ -25,12 +26,12 @@ const statusCell = (status: string) => {
 
 const ViewRegrade: React.FC = () => {
   const [data, setData] = useState<RegradeRequest[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+    const setGlobalLoading = useLoadingStore((state) => state.setLoading);
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setGlobalLoading(true);
       setError(null);
       try {
         const res = await getRegradeRequestByStudentId();
@@ -38,7 +39,7 @@ const ViewRegrade: React.FC = () => {
       } catch (err: any) {
         setError(err?.message || "Error loading data");
       } finally {
-        setLoading(false);
+        setGlobalLoading(false);
       }
     };
     fetchData();
@@ -46,12 +47,7 @@ const ViewRegrade: React.FC = () => {
 
   return (
     <div className="max-w-full bg-white rounded-3xl shadow-2xl px-10 py-8 border border-blue-100">
-      <h2 className="text-4xl font-extrabold mb-10 text-center drop-shadow-sm">
-        Your Regrade Requests
-      </h2>
-      {loading ? (
-        <div className="text-center text-lg">Loading...</div>
-      ) : error ? (
+      {error ? (
         <div className="text-center text-red-600">{error}</div>
       ) : (
         <div className="overflow-x-auto px-6">

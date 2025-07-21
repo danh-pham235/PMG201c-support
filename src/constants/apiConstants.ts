@@ -13,12 +13,13 @@ export const API_SUBMISSION = {
   GET_SUBMISSION: "/Submission/submission-table",
   GET_GRADE_BY_EXAMID: "/Submission/get-grades",
   GET_SUBMISSION_DETAIL: "/Submission/submission-detail",
+  AI_SCORE: "/Submission/AI-Score",
 };
 
 export const API_EXAM = {
   EXAM_EXAMINER: "/Exam/exams-examiner",
   UPLOAD_EXAM_PAPER: "/Exam/upload-exam-paper",
-  UPLOAD_BAREM: "/Exam/upload-barem", // cần truyền examId phía sau
+  UPLOAD_BAREM: "/Exam/upload-barem", 
   VIEW_BAREM: "/Exam/view-barem",
   AUTO_ASSIGN: "/Exam/assign-lecturers",
   STUDENT_EXAMS: "/Exam/student-exams",

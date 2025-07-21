@@ -60,14 +60,6 @@ const GradeSubmission: React.FC = () => {
 
   const handleAICheck = async () => {
     setLoading(true);
-    // Giả lập gọi AI grading
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setAiScore(8.5); // Giả lập điểm AI
-    setLoading(false);
-  };
-
-  const handleSubmit = async () => {
-    setLoading(true);
     try {
       const res = await aiGrade(submissionId);
       setAiScore(res.aiScore);
@@ -77,6 +69,13 @@ const GradeSubmission: React.FC = () => {
       toast.error("AI grading failed!");
     }
     setLoading(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Giả lập submit
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    alert("Grading submitted successfully!");
   };
 
   return (

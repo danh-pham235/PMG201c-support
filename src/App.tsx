@@ -14,6 +14,8 @@ import StudentLayout from "./layouts/StudentLayout";
 import DepartmentLeaderLayout from "./layouts/DepartmentLeaderLayout";
 import ExaminerLayout from "./layouts/ExaminerLayout";
 import LecturerLayout from "./layouts/LecturerLayout";
+import adminRoutes from "./routes/admin.route";
+import AdminLayout from "./layouts/AdminLayout";
 
 const router = createBrowserRouter([
   {
@@ -58,6 +60,15 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: lecturerRoutes.children,
+  },
+  {
+    path: "/admin",
+    element: (
+      <ProtectedRoute>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
+    children: adminRoutes.children,
   },
 ]);
 

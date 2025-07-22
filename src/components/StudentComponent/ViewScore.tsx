@@ -40,7 +40,7 @@ const ViewScore: React.FC = () => {
         setSubmission(submissionData);
         setError(null);
       })
-      .catch(() => setError("Không tìm thấy dữ liệu chấm điểm."))
+      .catch(() => setError("No scoring data found."))
       .finally(() => setLoading(false));
   }, [selectedExamId]);
 
@@ -68,7 +68,6 @@ const ViewScore: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full">
-      {/* Dropdown chọn mã đề đẹp hơn */}
       <div className="flex justify-start mt-8 mb-6 ml-5">
         <div className="flex items-center gap-3 bg-white shadow-lg rounded-xl px-6 py-4">
           <FaListAlt className="text-blue-600 text-2xl" />

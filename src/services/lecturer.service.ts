@@ -32,3 +32,7 @@ export const getAllExam = async () => {
   const response = await axiosInstance.get(API_EXAM.EXAMS);
   return response.data;
 };
+export const aiGrade = async (submissionId: string) => {
+  const response = await axiosInstance.get(`${API_SUBMISSION.AI_SCORE}/${submissionId}`);
+  return response.data;
+}

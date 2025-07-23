@@ -14,6 +14,7 @@ export const API_SUBMISSION = {
   GET_GRADE_BY_EXAMID: "/Submission/get-grades",
   GET_SUBMISSION_DETAIL: "/Submission/submission-detail",
   SUBMIT_GRADE: "/Submission/submit-grade",
+  AI_SCORE: "/Submission/AI-Score",
 };
 
 export const API_EXAM = {

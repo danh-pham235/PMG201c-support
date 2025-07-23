@@ -8,6 +8,8 @@ import { useLoadingStore } from "../../config/zustand";
 import { submitGrade } from "../../services/lecturer.service";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { aiGrade } from "../../services/lecturer.service";
+
 
 const GradeSubmission: React.FC = () => {
   const location = useLocation();
@@ -60,9 +62,14 @@ const GradeSubmission: React.FC = () => {
 
   const handleAICheck = async () => {
     setLoading(true);
-    // Giả lập gọi AI grading
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setAiScore(8.5); // Giả lập điểm AI
+    try {
+      const res = await aiGrade(submissionId);
+      setAiScore(res.aiScore);
+      toast.success("AI grading completed successfully!");
+    } catch (err) {
+      setAiScore(null);
+      toast.error("AI grading failed!");
+    }
     setLoading(false);
   };
 
@@ -129,9 +136,24 @@ const GradeSubmission: React.FC = () => {
             minHeight: 220,
           }}
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: 18, flex: 1, minWidth: 200 }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 18,
+              flex: 1,
+              minWidth: 200,
+            }}
+          >
             <div>
-              <label style={{ fontWeight: 700, marginBottom: 8, display: "block", color: "#2d2d72" }}>
+              <label
+                style={{
+                  fontWeight: 700,
+                  marginBottom: 8,
+                  display: "block",
+                  color: "#2d2d72",
+                }}
+              >
                 AI Score:
               </label>
               <input
@@ -152,7 +174,14 @@ const GradeSubmission: React.FC = () => {
               />
             </div>
             <div>
-              <label style={{ fontWeight: 700, marginBottom: 8, display: "block", color: "#2d2d72" }}>
+              <label
+                style={{
+                  fontWeight: 700,
+                  marginBottom: 8,
+                  display: "block",
+                  color: "#2d2d72",
+                }}
+              >
                 Final Score:
               </label>
               <input
@@ -174,8 +203,23 @@ const GradeSubmission: React.FC = () => {
               />
             </div>
           </div>
-          <div style={{ flex: 2, minWidth: 220, display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
-            <label style={{ fontWeight: 700, marginBottom: 8, display: "block", color: "#2d2d72" }}>
+          <div
+            style={{
+              flex: 2,
+              minWidth: 220,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+            }}
+          >
+            <label
+              style={{
+                fontWeight: 700,
+                marginBottom: 8,
+                display: "block",
+                color: "#2d2d72",
+              }}
+            >
               Note:
             </label>
             <textarea
@@ -195,14 +239,16 @@ const GradeSubmission: React.FC = () => {
               }}
             />
           </div>
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-            justifyContent: "flex-end",
-            minWidth: 160,
-            height: 140,
-          }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+              justifyContent: "flex-end",
+              minWidth: 160,
+              height: 140,
+            }}
+          >
             <button
               type="button"
               onClick={handleAICheck}
@@ -266,17 +312,19 @@ const GradeSubmission: React.FC = () => {
               flexDirection: "column",
             }}
           >
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              fontWeight: 800,
-              fontSize: 24,
-              marginBottom: 20,
-              borderLeft: "5px solid #647dee",
-              paddingLeft: 14,
-              letterSpacing: 0.5,
-              color: "#2d2d72"
-            }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                fontWeight: 800,
+                fontSize: 24,
+                marginBottom: 20,
+                borderLeft: "5px solid #647dee",
+                paddingLeft: 14,
+                letterSpacing: 0.5,
+                color: "#2d2d72",
+              }}
+            >
               <FaUserGraduate style={{ marginRight: 10, color: "#647dee" }} />
               Student Submission
             </div>
@@ -313,17 +361,19 @@ const GradeSubmission: React.FC = () => {
               flexDirection: "column",
             }}
           >
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              fontWeight: 800,
-              fontSize: 24,
-              marginBottom: 20,
-              borderLeft: "5px solid #7f53ac",
-              paddingLeft: 14,
-              letterSpacing: 0.5,
-              color: "#4b2479"
-            }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                fontWeight: 800,
+                fontSize: 24,
+                marginBottom: 20,
+                borderLeft: "5px solid #7f53ac",
+                paddingLeft: 14,
+                letterSpacing: 0.5,
+                color: "#4b2479",
+              }}
+            >
               <FaFilePdf style={{ marginRight: 10, color: "#7f53ac" }} />
               Answer Key
             </div>
@@ -350,4 +400,4 @@ const GradeSubmission: React.FC = () => {
   );
 };
 
-export default GradeSubmission; 
+export default GradeSubmission;

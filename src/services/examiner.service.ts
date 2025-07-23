@@ -17,8 +17,8 @@ export const uploadSubmission = async (examId: string, file: File) => {
   return response.data;
 };
 
-export const getAssignmentsExaminer = async () => {
-  const response = await axiosInstance.get(API_EXAM.EXAM_EXAMINER);
+export const getAllExam = async () => {
+  const response = await axiosInstance.get(API_EXAM.EXAMS);
   return response.data;
 };
 

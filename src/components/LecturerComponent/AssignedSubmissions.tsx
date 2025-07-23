@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaPen } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { getAssignmentsExaminer } from "../../services/examiner.service";
-import { getAssignedDistributions } from "../../services/lecturer.service";
+import { getAssignedDistributions, getAllExam } from "../../services/lecturer.service";
 import { useLoadingStore } from "../../config/zustand";
 
 interface Exam {
@@ -34,7 +33,7 @@ const AssignedSubmissions: React.FC = () => {
   useEffect(() => {
     const fetchExams = async () => {
       try {
-        const data = (await getAssignmentsExaminer()) as Exam[];
+        const data = (await getAllExam()) as Exam[];
         setExams(data);
         // Lấy danh sách semester duy nhất
         const uniqueSemesters = Array.from(new Set(data.map((exam) => exam.semester)));

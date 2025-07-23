@@ -5,7 +5,7 @@ export const API_USER = {
   LOGOUT: "/User/logout",
   IMPORT_USERS: "/User/import-users",
   GET_USERS: "/User/get-users",
-  UPDATE_USER: "/User/update-user", // cần truyền userId phía sau
+  UPDATE_USER: "/User/update-user", 
 };
 
 export const API_SUBMISSION = {
@@ -13,17 +13,18 @@ export const API_SUBMISSION = {
   GET_SUBMISSION: "/Submission/submission-table",
   GET_GRADE_BY_EXAMID: "/Submission/get-grades",
   GET_SUBMISSION_DETAIL: "/Submission/submission-detail",
+  SUBMIT_GRADE: "/Submission/submit-grade",
   AI_SCORE: "/Submission/AI-Score",
 };
 
 export const API_EXAM = {
-  EXAM_EXAMINER: "/Exam/exams-examiner",
   UPLOAD_EXAM_PAPER: "/Exam/upload-exam-paper",
   UPLOAD_BAREM: "/Exam/upload-barem", 
   VIEW_BAREM: "/Exam/view-barem",
   AUTO_ASSIGN: "/Exam/assign-lecturers",
   STUDENT_EXAMS: "/Exam/student-exams",
   PUBLISH_SCORES: "/Exam/publish-scores",
+  EXAMS: "/Exam/exams"
 };
 
 export const API_REGRADE_REQUEST = {

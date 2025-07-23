@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
-import { uploadSubmission, getAssignmentsExaminer } from "../../services/examiner.service";
+import { uploadSubmission, getAllExam } from "../../services/examiner.service";
 import { MdOutlineUploadFile } from "react-icons/md";
 import { useLoadingStore } from "../../config/zustand";
 
@@ -24,7 +24,7 @@ const UploadSubmissions: React.FC = () => {
       try {
         setLoading(true);
         setLoadingExams(true);
-        const res = await getAssignmentsExaminer();
+        const res = await getAllExam();
         const exams = (res || []).map((item: any) => ({
           examId: item.examId,
           semester: item.semester,

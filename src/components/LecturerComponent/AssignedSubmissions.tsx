@@ -14,6 +14,7 @@ interface Distribution {
   submissionDistributionId: string;
   submissionId: string;
   examId: string;
+  studentCode: string;
   finalScore: number | null;
   status: string;
   assignedAt: string;
@@ -108,26 +109,24 @@ const AssignedSubmissions: React.FC = () => {
           <table className="w-full table-fixed border-separate border-spacing-y-2">
             <colgroup>
               <col style={{ width: '30%' }} />
+              <col style={{ width: '30%' }} />
               <col style={{ width: '20%' }} />
               <col style={{ width: '20%' }} />
-              <col style={{ width: '18%' }} />
-              <col style={{ width: '12%' }} />
             </colgroup>
             <thead>
               <tr className="bg-gradient-to-r from-blue-500 to-blue-400 text-white rounded-xl shadow">
-                <th className="px-4 py-3 text-center font-bold text-base uppercase tracking-wider rounded-l-xl">Distribution ID</th>
-                <th className="px-4 py-3 text-center font-bold text-base uppercase tracking-wider">Submission ID</th>
+                <th className="px-4 py-3 text-center font-bold text-base uppercase tracking-wider rounded-l-xl">Student Code</th>
+                <th className="px-4 py-3 text-center font-bold text-base uppercase tracking-wider">Assigned At</th>
                 <th className="px-4 py-3 text-center font-bold text-base uppercase tracking-wider">Status</th>
-                <th className="px-4 py-3 text-center font-bold text-base uppercase tracking-wider">Score</th>
                 <th className="px-4 py-3 text-center font-bold text-base uppercase tracking-wider rounded-r-xl">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={5} className="text-center py-10 text-blue-400 text-lg">Loading...</td></tr>
+                <tr><td colSpan={4} className="text-center py-10 text-blue-400 text-lg">Loading...</td></tr>
               ) : distributions.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-10 text-gray-400 text-lg">
+                  <td colSpan={4} className="text-center py-10 text-gray-400 text-lg">
                     No assigned submissions.
                   </td>
                 </tr>
@@ -137,11 +136,18 @@ const AssignedSubmissions: React.FC = () => {
                     key={dist.submissionDistributionId}
                     className={`transition hover:scale-[1.01] hover:shadow-lg duration-150 bg-white rounded-xl border border-blue-100 ${idx % 2 === 0 ? "" : "bg-blue-50"}`}
                   >
-                    <td className="px-6 py-4 text-center font-medium text-blue-900 rounded-l-xl">{dist.submissionDistributionId}</td>
-                    <td className="px-6 py-4 text-center text-blue-800">{dist.submissionId}</td>
-                    <td className="px-6 py-4 text-center text-blue-700 font-semibold">{dist.status}</td>
-                    <td className="px-6 py-4 text-center text-green-800 font-bold">{dist.finalScore !== null ? dist.finalScore : '-'}</td>
+                    <td className="px-6 py-4 text-center font-medium text-blue-900 rounded-l-xl">{dist.studentCode}</td>
+                    <td className="px-6 py-4 text-center text-blue-800">{new Date(dist.assignedAt).toLocaleString()}</td>
                     <td className="px-6 py-4 text-center">
+                      {dist.status === "Completed" ? (
+                        <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 font-semibold text-sm shadow">Completed</span>
+                      ) : dist.status === "InProgress" ? (
+                        <span className="inline-block px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 font-semibold text-sm shadow">In Progress</span>
+                      ) : (
+                        <span className="inline-block px-3 py-1 rounded-full bg-gray-100 text-gray-700 font-semibold text-sm shadow">{dist.status}</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-center rounded-r-xl">
                       <button
                         onClick={() => handleGrade(dist.submissionId, dist.examId)}
                         disabled={dist.status === "Graded"}

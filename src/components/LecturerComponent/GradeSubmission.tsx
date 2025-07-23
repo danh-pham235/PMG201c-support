@@ -5,6 +5,9 @@ import { API_SUBMISSION, API_EXAM } from "../../constants/apiConstants";
 import { FaUserGraduate, FaFilePdf } from "react-icons/fa";
 import LoadingScreen from "../Common/LoadingScreen";
 import { useLoadingStore } from "../../config/zustand";
+import { submitGrade } from "../../services/lecturer.service";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const GradeSubmission: React.FC = () => {
   const location = useLocation();
@@ -27,13 +30,12 @@ const GradeSubmission: React.FC = () => {
       setGlobalLoading(true);
       const start = Date.now();
       try {
-        // Lấy submission content
         const resSubmission = await axiosInstance.get(
           `${API_SUBMISSION.GET_SUBMISSION_DETAIL}/${submissionId}`
         );
         setStudentText(resSubmission.data.content || "");
 
-        // Lấy barem PDF
+        
         const resBarem = await axiosInstance.get(
           `${API_EXAM.VIEW_BAREM}/${examId}`,
           { responseType: "blob" }
@@ -66,13 +68,27 @@ const GradeSubmission: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Giả lập submit
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    alert("Grading submitted successfully!");
+    if (!submissionId || finalScore === null) {
+      toast.error("Missing submission ID or score!");
+      return;
+    }
+    try {
+      setGlobalLoading(true);
+      await submitGrade(submissionId, finalScore, note);
+      toast.success("Grading submitted successfully!");
+      setTimeout(() => {
+        navigate("/lecturer/assigned-submissions");
+      }, 1200);
+    } catch (error) {
+      toast.error("Failed to submit grade!");
+    } finally {
+      setTimeout(() => setGlobalLoading(false), 800);
+    }
   };
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={2000} />
       <LoadingScreen />
       <div
         style={{

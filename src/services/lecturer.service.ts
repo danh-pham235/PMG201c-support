@@ -16,3 +16,19 @@ export const getBarem = async (examId: string) => {
   const response = await axiosInstance.get(`${API_EXAM.VIEW_BAREM}/${examId}`);
   return response.data;
 };
+
+export const submitGrade = async (submissionId: string, grade: number, note: string) => {
+  const response = await axiosInstance.post(
+    `${API_SUBMISSION.SUBMIT_GRADE}/${submissionId}`,
+    {
+      grade,
+      note,
+    }
+  );
+  return response.data;
+};
+
+export const getAllExam = async () => {
+  const response = await axiosInstance.get(API_EXAM.EXAMS);
+  return response.data;
+};

@@ -124,9 +124,10 @@ const GradeSubmission: React.FC = () => {
         <form
           onSubmit={handleSubmit}
           style={{
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 32,
+            display: "grid",
+            gridTemplateColumns: "1.1fr 2fr 0.8fr",
+            alignItems: "center",
+            gap: 28,
             maxWidth: 1200,
             margin: "0 auto 40px auto",
             background: "#fff",
@@ -141,7 +142,6 @@ const GradeSubmission: React.FC = () => {
               display: "flex",
               flexDirection: "column",
               gap: 18,
-              flex: 1,
               minWidth: 200,
             }}
           >
@@ -152,6 +152,7 @@ const GradeSubmission: React.FC = () => {
                   marginBottom: 8,
                   display: "block",
                   color: "#2d2d72",
+                  letterSpacing: 0.2,
                 }}
               >
                 AI Score:
@@ -170,6 +171,8 @@ const GradeSubmission: React.FC = () => {
                   marginBottom: 0,
                   color: "#4b2479",
                   fontWeight: 600,
+                  boxShadow: "0 1px 6px #647dee11",
+                  transition: "border 0.2s",
                 }}
               />
             </div>
@@ -180,6 +183,7 @@ const GradeSubmission: React.FC = () => {
                   marginBottom: 8,
                   display: "block",
                   color: "#2d2d72",
+                  letterSpacing: 0.2,
                 }}
               >
                 Final Score:
@@ -199,17 +203,19 @@ const GradeSubmission: React.FC = () => {
                   marginBottom: 0,
                   color: "#2d2d72",
                   fontWeight: 600,
+                  boxShadow: "0 1px 6px #647dee11",
+                  transition: "border 0.2s",
                 }}
               />
             </div>
           </div>
           <div
             style={{
-              flex: 2,
               minWidth: 220,
               display: "flex",
               flexDirection: "column",
               justifyContent: "flex-start",
+              gap: 8,
             }}
           >
             <label
@@ -218,6 +224,7 @@ const GradeSubmission: React.FC = () => {
                 marginBottom: 8,
                 display: "block",
                 color: "#2d2d72",
+                letterSpacing: 0.2,
               }}
             >
               Note:
@@ -233,9 +240,11 @@ const GradeSubmission: React.FC = () => {
                 border: "1.5px solid #bfc9e0",
                 fontSize: 18,
                 background: "#f5f7fa",
-                height: 140,
+                height: 110,
                 resize: "vertical",
                 color: "#2d2d72",
+                boxShadow: "0 1px 6px #647dee11",
+                transition: "border 0.2s",
               }}
             />
           </div>
@@ -244,9 +253,9 @@ const GradeSubmission: React.FC = () => {
               display: "flex",
               flexDirection: "column",
               gap: 16,
-              justifyContent: "flex-end",
-              minWidth: 160,
-              height: 140,
+              alignItems: "stretch",
+              minWidth: 140,
+              justifySelf: "end",
             }}
           >
             <button
@@ -263,11 +272,15 @@ const GradeSubmission: React.FC = () => {
                 fontSize: 18,
                 boxShadow: "0 4px 16px #7f53ac44",
                 cursor: loading ? "not-allowed" : "pointer",
-                transition: "background 0.2s, box-shadow 0.2s",
+                transition: "background 0.2s, box-shadow 0.2s, transform 0.1s",
                 marginBottom: 6,
                 letterSpacing: 1,
                 textShadow: "0 1px 8px #7f53ac33",
+                outline: "none",
+                borderBottom: loading ? "3px solid #bfc9e0" : "none",
               }}
+              onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)'}
+              onMouseOut={e => e.currentTarget.style.transform = 'none'}
             >
               {loading ? "AI Grading..." : "AI Grading"}
             </button>
@@ -282,9 +295,12 @@ const GradeSubmission: React.FC = () => {
                 fontWeight: 700,
                 fontSize: 18,
                 cursor: "pointer",
-                transition: "background 0.2s",
+                transition: "background 0.2s, transform 0.1s",
                 boxShadow: "0 2px 8px #43a04733",
+                outline: "none",
               }}
+              onMouseOver={e => e.currentTarget.style.background = '#388e3c'}
+              onMouseOut={e => e.currentTarget.style.background = '#43a047'}
             >
               Submit
             </button>

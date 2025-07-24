@@ -22,6 +22,8 @@ const getRouteByRole = (role: string) => {
       return "/examiner";
     case "DepartmentLeader":
       return "/department-leader";
+    case "Admin":
+      return "/admin";
     default:
       return "/";
   }

@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-const CLIENT_ID = "594718891503-l69jk6egr65mu2jdk9bqatoektd52edr.apps.googleusercontent.com";
+const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const getRouteByRole = (role: string) => {
   switch (role) {
@@ -22,6 +22,8 @@ const getRouteByRole = (role: string) => {
       return "/examiner";
     case "DepartmentLeader":
       return "/department-leader";
+    case "Admin":
+      return "/admin";
     default:
       return "/";
   }

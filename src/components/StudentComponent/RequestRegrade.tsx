@@ -16,7 +16,7 @@ const RequestRegrade: React.FC = () => {
         reason,
       });
       setSubmitted(true);
-      toast.success("Regrade request submitted successfully!");
+      toast.success("Submission successful! Check your email for details.");
     } catch (err: any) {
       toast.error("Failed to submit regrade request. Please try again.");
     }

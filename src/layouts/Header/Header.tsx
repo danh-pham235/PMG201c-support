@@ -29,6 +29,8 @@ const Header: React.FC = () => {
       navItems.push({ href: "/lecturer", label: "Lecturer" });
     } else if (user.role === "Student") {
       navItems.push({ href: "/student", label: "Student" });
+    } else if (user.role === "Admin") {
+      navItems.push({ href: "/admin", label: "Admin" });
     }
   }
 
@@ -68,10 +70,10 @@ const Header: React.FC = () => {
               <li key={item.href + item.label}>
                 <a
                   href={item.href}
-                  className={`px-4 py-2 font-semibold rounded-full transition-all duration-200
-                    ${location.pathname.startsWith(item.href) && item.href !== "/" ? "text-orange-500 bg-orange-50 shadow-sm" : "text-gray-700 hover:text-orange-500 hover:bg-orange-50"}
+                  className={`px-5 py-2 font-semibold rounded-full transition-all duration-200 text-center whitespace-nowrap
+                    ${(item.href !== "/" && location.pathname.includes(item.href)) ? "text-orange-500 bg-orange-50 shadow-sm" : "text-gray-700 hover:text-orange-500 hover:bg-orange-50"}
                   `}
-                  style={{ position: 'relative' }}
+                  style={{ display: 'inline-block' }}
                 >
                   {item.label}
                   {location.pathname.startsWith(item.href) && item.href !== "/" && false && (
@@ -87,7 +89,7 @@ const Header: React.FC = () => {
           {user ? (
             <div className="ml-4 relative">
               <button
-                className={`px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-400 text-white rounded-full font-semibold shadow flex items-center gap-2 focus:outline-none hover:scale-105 transition-all duration-200 border-2 border-transparent hover:border-orange-300 hover:ring-2 hover:ring-orange-200/60 ${dropdownOpen ? 'ring-2 ring-orange-300' : ''}`}
+                className={`px-4 py-2 bg-gradient-to-r from-orange-500 to-yellow-400 text-white rounded-full font-semibold shadow flex items-center gap-2 focus:outline-none hover:scale-105 transition-all duration-200 border-2 border-transparent hover:border-orange-300 hover:ring-2 hover:ring-orange-200/60 whitespace-nowrap ${dropdownOpen ? 'ring-2 ring-orange-300' : ''}`}
                 onClick={() => setDropdownOpen((prev) => !prev)}
               >
                 <span className="w-7 h-7 rounded-full bg-white/30 flex items-center justify-center">
@@ -149,7 +151,8 @@ const Header: React.FC = () => {
                 <a
                   key={item.href + item.label}
                   href={item.href}
-                  className={`text-lg font-semibold rounded-full px-4 py-2 transition-all duration-200 ${location.pathname.startsWith(item.href) && item.href !== "/" ? "text-orange-500 bg-orange-50" : "text-black hover:text-orange-500 hover:bg-orange-50"}`}
+                  className={`text-lg font-semibold rounded-full px-5 py-2 transition-all duration-200 text-center whitespace-nowrap ${(item.href !== "/" && location.pathname.includes(item.href)) ? "text-orange-500 bg-orange-50" : "text-black hover:text-orange-500 hover:bg-orange-50"}`}
+                  style={{ display: 'inline-block' }}
                   onClick={() => setMenuOpen(false)}
                 >
                   {item.label}
